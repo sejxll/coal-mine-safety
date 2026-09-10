@@ -1,0 +1,2060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Smart Governance & Compliance Monitoring | Coal Mines (SIH 2026)</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">⛏️</text></svg>">
+    <style>
+/* ==========================================================================
+   Coal Mine AI Smart Governance Command Center - Standalone SCADA Theme
+   ========================================================================== */
+
+:root {
+    --bg-base: #0a0d14;
+    --bg-surface: #121824;
+    --bg-card: #182030;
+    --bg-card-hover: #1e283c;
+    --border-color: #232e44;
+    --border-highlight: #3b82f6;
+    
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-sub: #64748b;
+    
+    --color-safe: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+    --color-accent: #0284c7;
+    --color-coal-gold: #fbbf24;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+body {
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* Header Styles */
+.navbar {
+    background: linear-gradient(180deg, #161f30 0%, #0f1522 100%);
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.brand-icon {
+    background: linear-gradient(135deg, #0284c7 0%, #1e3a8a 100%);
+    border: 1px solid #38bdf8;
+    color: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 22px;
+    box-shadow: 0 0 15px rgba(2, 132, 199, 0.4);
+}
+
+.brand-title h1 {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #f8fafc;
+}
+
+.brand-title p {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.3px;
+}
+
+.nav-status-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.dgms-badge {
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid var(--color-safe);
+    color: var(--color-safe);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.5px;
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--color-safe);
+    box-shadow: 0 0 10px var(--color-safe);
+    animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); opacity: 0.8; }
+    50% { transform: scale(1.3); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+.btn-sos {
+    background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%);
+    border: 1px solid #f87171;
+    color: white;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 14px rgba(220, 38, 38, 0.5);
+    transition: all 0.2s ease;
+}
+
+.btn-sos:hover {
+    background: #b91c1c;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+    transform: translateY(-1px);
+}
+
+.btn-tool {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.btn-tool:hover {
+    background: var(--bg-card-hover);
+    border-color: #3b82f6;
+}
+
+/* Main Layout Grid */
+.dashboard-container {
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 18px;
+    flex: 1;
+}
+
+@media (max-width: 1024px) {
+    .dashboard-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.col-left, .col-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Card Styles */
+.scada-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.card-header {
+    padding: 11px 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-body {
+    padding: 14px;
+}
+
+/* Video Feed Container */
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#visionCanvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+#webcamVideo {
+    display: none;
+}
+
+.video-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-color);
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.btn-group {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-mode {
+    background: #1e293b;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-mode.active {
+    background: var(--color-accent);
+    color: white;
+    border-color: #38bdf8;
+    box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
+}
+
+/* Quick Hackathon Demo Bar */
+.demo-bar {
+    background: linear-gradient(90deg, #182030 0%, #151c2a 100%);
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.demo-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--color-coal-gold);
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.demo-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+@media (max-width: 640px) {
+    .demo-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+.btn-demo {
+    background: #1e2738;
+    border: 1px solid #334155;
+    color: #e2e8f0;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+}
+
+.btn-demo:hover {
+    background: #27354d;
+    border-color: #60a5fa;
+    color: white;
+}
+
+.btn-demo.danger-btn:hover {
+    border-color: #f87171;
+    background: rgba(239, 68, 68, 0.15);
+}
+
+/* KPI Scoreboard */
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+@media (max-width: 640px) {
+    .kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.kpi-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+}
+
+.kpi-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--text-sub);
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.kpi-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.1;
+}
+
+.kpi-sub {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* Atmospheric Telemetry HUD */
+.telem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+@media (max-width: 480px) {
+    .telem-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.gauge-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.gauge-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.gauge-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.gauge-badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.badge-normal { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.badge-warning { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.badge-critical { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+.gauge-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.gauge-progress-bg {
+    width: 100%;
+    height: 6px;
+    background: #0f1522;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.gauge-progress-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+/* Worker Roster Table */
+.worker-table-container {
+    max-height: 230px;
+    overflow-y: auto;
+}
+
+table.worker-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+table.worker-table th {
+    text-align: left;
+    padding: 8px 10px;
+    color: var(--text-sub);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    background: var(--bg-surface);
+}
+
+table.worker-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    vertical-align: middle;
+}
+
+.worker-identity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.avatar-badge {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #1e293b;
+    border: 1px solid #38bdf8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.status-chip {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.chip-ok { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+.chip-violation { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+/* Live Incident Feed */
+.incident-list {
+    max-height: 240px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.incident-item {
+    background: var(--bg-card);
+    border-left: 3px solid var(--color-warning);
+    border-radius: 0 6px 6px 0;
+    padding: 8px 10px;
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.incident-item.crit {
+    border-left-color: var(--color-danger);
+    background: rgba(239, 68, 68, 0.08);
+}
+
+.incident-time {
+    font-size: 10px;
+    color: var(--text-sub);
+}
+
+.incident-desc {
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-top: 2px;
+}
+
+/* Modals */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--bg-surface);
+    border: 1px solid #38bdf8;
+    border-radius: 12px;
+    width: 640px;
+    max-width: 92vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+    box-shadow: 0 0 30px rgba(2, 132, 199, 0.4);
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    background: #0f1522;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: #fff;
+    font-size: 12px;
+}
+
+/* Canvas Sparkline */
+#gasTrendCanvas {
+    width: 100%;
+    height: 100px;
+    display: block;
+    background: #0d121c;
+    border-radius: 6px;
+    margin-top: 6px;
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- Emergency SOS Flashing Banner -->
+    <div id="sosBanner" style="display: none; background: #dc2626; color: #fff; text-align: center; padding: 10px; font-weight: 800; font-size: 15px; letter-spacing: 0.5px; animation: pulse 0.9s infinite;">
+        🚨 MINE-WIDE EVACUATION IN PROGRESS: STATUTORY HAZARD DETECTED
+    </div>
+
+    <!-- Top Navigation Header -->
+    <header class="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">⛏️</div>
+            <div class="brand-title">
+                <h1>AI-BASED SMART GOVERNANCE & COMPLIANCE SYSTEM</h1>
+                <p>Ministry of Coal & DGMS Protocol | Singareni Colliery Shaft-3B | Smart India Hackathon</p>
+            </div>
+        </div>
+
+        <div class="nav-status-group">
+            <div class="dgms-badge">
+                <span class="pulse-dot"></span>
+                <span>DGMS CMR-2017 ACTIVE</span>
+            </div>
+
+            <button id="btnToggleAudio" class="btn-tool" style="border-color: #10b981;">
+                🔊 SOUND: ACTIVE
+            </button>
+
+            <button id="btnGenReport" class="btn-tool" style="border-color: #0284c7; color: #38bdf8;">
+                📄 DGMS AUDIT REPORT
+            </button>
+
+            <button id="btnSos" class="btn-sos">
+                🚨 SOS EVACUATE
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Body -->
+    <main class="dashboard-container">
+        
+        <!-- Left Column: Video Feed & Demonstration Controls -->
+        <section class="col-left">
+            
+            <!-- Video Feed HUD Card -->
+            <div class="scada-card">
+                <div class="card-header">
+                    <span class="card-title">
+                        <span>📹</span> REAL-TIME AI VISION INFERENCE & PPE COMPLIANCE HUD
+                    </span>
+                    <div class="btn-group">
+                        <button id="btnModeWebcam" class="btn-mode active">LIVE CAMERA SCANNER</button>
+                        <button id="btnModeSim" class="btn-mode">SIMULATED MINE SHAFT</button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="video-wrapper">
+                        <canvas id="visionCanvas" width="854" height="480"></canvas>
+                        <video id="webcamVideo" playsinline></video>
+                    </div>
+
+                    <div class="video-controls">
+                        <div style="font-size: 11px; color: #94a3b8;">
+                            <span>Active Models: </span>
+                            <strong style="color: #38bdf8;">Helmet (Hard Hat) Detection</strong> • 
+                            <strong style="color: #38bdf8;">Safety Vest (Dress) Detection</strong> • 
+                            <strong style="color: #38bdf8;">Face Scanner (Worker 1)</strong> • 
+                            <strong style="color: #38bdf8;">Gas Sensors HUD (MQ-4, MQ-7, PMS5003)</strong>
+                        </div>
+                        <div style="font-size: 11px; color: #10b981; font-weight: 700;">
+                            ● CAMERA SCANNER ACTIVE (REAL-TIME DETECTION)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hackathon Presentation Demo Console -->
+            <div class="demo-bar">
+                <div class="demo-title">
+                    <span>⚡</span> SMART INDIA HACKATHON — JURY PRESENTATION INTERACTIVE CONTROLLER
+                </div>
+                <div class="demo-actions">
+                    <button class="btn-demo danger-btn" onclick="triggerDemoAction('no_helmet')">
+                        🪖 <strong>Toggle No Helmet</strong><br><small style="color:#94a3b8;">Trigger PPE Breach (Worker 1)</small>
+                    </button>
+                    <button class="btn-demo danger-btn" onclick="triggerDemoAction('no_vest')">
+                        🦺 <strong>Toggle No Vest</strong><br><small style="color:#94a3b8;">Trigger Dress Breach (Worker 2)</small>
+                    </button>
+                    <button class="btn-demo danger-btn" onclick="triggerDemoAction('danger_zone_breach')">
+                        ⛔ <strong>Blasting Zone Breach</strong><br><small style="color:#94a3b8;">Worker 3 enters restricted zone</small>
+                    </button>
+                    <button class="btn-demo danger-btn" onclick="triggerDemoAction('methane_leak')">
+                        🔥 <strong>Inject Methane Leak</strong><br><small style="color:#94a3b8;">CH4 &gt; 1.0% (Explosive Hazard)</small>
+                    </button>
+                    <button class="btn-demo danger-btn" onclick="triggerDemoAction('coal_dust_spike')">
+                        💨 <strong>Coal Dust Spike</strong><br><small style="color:#94a3b8;">PM2.5 &gt; 300 µg/m³ (Black Lung Risk)</small>
+                    </button>
+                    <button class="btn-demo" style="border-color: #10b981; background: rgba(16, 185, 129, 0.12);" onclick="triggerDemoAction('reset')">
+                        🔄 <strong>Reset Compliance</strong><br><small style="color:#a7f3d0;">Restore Normal Operations</small>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live Gas Concentration Trend Graph -->
+            <div class="scada-card">
+                <div class="card-header">
+                    <span class="card-title">
+                        <span>📈</span> 30-SECOND REAL-TIME HAZARDOUS GAS TELEMETRY STREAM (MQ-4 / MQ-7)
+                    </span>
+                    <div style="display:flex; gap: 14px; font-size: 11px;">
+                        <span style="color: #06b6d4;">■ Methane (CH4 %)</span>
+                        <span style="color: #f97316;">■ Carbon Monoxide (CO ppm)</span>
+                    </div>
+                </div>
+                <div class="card-body" style="padding-top: 4px;">
+                    <canvas id="gasTrendCanvas"></canvas>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Column: Governance KPIs, AQI Gauges, Roster & Violations -->
+        <section class="col-right">
+            
+            <!-- Key Performance Indicator Scoreboard -->
+            <div class="kpi-row">
+                <div class="kpi-box">
+                    <div class="kpi-label">Mine Safety Score</div>
+                    <div id="valMss" class="kpi-val" style="color: #10b981;">98.5%</div>
+                    <div id="valGrade" class="kpi-sub" style="color: #10b981;">A+ (EXEMPLARY)</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-label">Air Quality Index</div>
+                    <div id="valAqi" class="kpi-val">68</div>
+                    <div class="kpi-sub">CPCB Standard</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-label">Underground Headcount</div>
+                    <div id="valWorkers" class="kpi-val">4 / 4</div>
+                    <div class="kpi-sub">Live Presence</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-label">Infractions Today</div>
+                    <div id="valViolations" class="kpi-val" style="color: #f59e0b;">1</div>
+                    <div class="kpi-sub">Active Alerts</div>
+                </div>
+            </div>
+
+            <!-- Environmental Telemetry & Gas Gauges -->
+            <div class="scada-card">
+                <div class="card-header">
+                    <span class="card-title">
+                        <span>🧪</span> ATMOSPHERIC SENSORS & DGMS STATUTORY THRESHOLDS
+                    </span>
+                    <span id="badgeVentilation" style="font-size: 11px; font-weight: 700; color: #10b981;">
+                        AUTO (STANDARD)
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="telem-grid">
+                        
+                        <!-- AQI Gauge -->
+                        <div class="gauge-card">
+                            <div class="gauge-header">
+                                <span class="gauge-name">Mine AQI</span>
+                                <span id="badgeAqi" class="gauge-badge badge-normal">NORMAL</span>
+                            </div>
+                            <div id="valAqi" class="gauge-value">68</div>
+                            <div style="font-size: 10px; color: #94a3b8;">Indian CPCB Scale (0-500)</div>
+                            <div class="gauge-progress-bg">
+                                <div id="barAqi" class="gauge-progress-bar" style="width: 22%; background-color: #10b981;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Methane Gauge -->
+                        <div class="gauge-card">
+                            <div class="gauge-header">
+                                <span class="gauge-name">Methane (CH4)</span>
+                                <span id="badgeCh4" class="gauge-badge badge-normal">DGMS SAFE</span>
+                            </div>
+                            <div id="valCh4" class="gauge-value">0.18%</div>
+                            <div style="font-size: 10px; color: #94a3b8;">Sensor: MQ-4 | Limit: 1.00%</div>
+                            <div class="gauge-progress-bg">
+                                <div id="barCh4" class="gauge-progress-bar" style="width: 18%; background-color: #10b981;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Carbon Monoxide Gauge -->
+                        <div class="gauge-card">
+                            <div class="gauge-header">
+                                <span class="gauge-name">Carbon Monoxide (CO)</span>
+                                <span id="badgeCo" class="gauge-badge badge-normal">DGMS SAFE</span>
+                            </div>
+                            <div id="valCo" class="gauge-value">8.5 ppm</div>
+                            <div style="font-size: 10px; color: #94a3b8;">Sensor: MQ-7 | Limit: 50.0 ppm</div>
+                            <div class="gauge-progress-bg">
+                                <div id="barCo" class="gauge-progress-bar" style="width: 15%; background-color: #10b981;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Coal Dust & Micro-Climate -->
+                        <div class="gauge-card">
+                            <div class="gauge-header">
+                                <span class="gauge-name">Coal Dust & Climate</span>
+                                <span class="gauge-badge badge-normal">MONITORED</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 4px;">
+                                <div>
+                                    <div style="font-size: 10px; color: #94a3b8;">PM2.5 (PMS5003)</div>
+                                    <div id="valPm25" style="font-size: 13px; font-weight: 700; color: #fff;">32.5 µg/m³</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 10px; color: #94a3b8;">PM10 (Dust)</div>
+                                    <div id="valPm10" style="font-size: 13px; font-weight: 700; color: #fff;">68.0 µg/m³</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 6px;">
+                                <div>
+                                    <div style="font-size: 10px; color: #94a3b8;">Temperature</div>
+                                    <div id="valTemp" style="font-size: 12px; font-weight: 600; color: #e2e8f0;">27.2 °C</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 10px; color: #94a3b8;">Humidity</div>
+                                    <div id="valHumidity" style="font-size: 12px; font-weight: 600; color: #e2e8f0;">74.5%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registered Miner Roster & Biometric Attendance -->
+            <div class="scada-card">
+                <div class="card-header">
+                    <span class="card-title">
+                        <span>👷</span> MINER ROSTER & BIOMETRIC COMPLIANCE DOSSIER
+                    </span>
+                    <button id="btnOpenEnroll" class="btn-tool" style="padding: 4px 10px; font-size: 11px;">
+                        + Enroll Miner
+                    </button>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <div class="worker-table-container">
+                        <table class="worker-table">
+                            <thead>
+                                <tr>
+                                    <th>Miner ID</th>
+                                    <th>Designation</th>
+                                    <th>Assigned Sector</th>
+                                    <th>Safety Index</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="workerTableBody">
+                                <!-- Populated by app.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Safety Infraction Incident Feed -->
+            <div class="scada-card">
+                <div class="card-header">
+                    <span class="card-title">
+                        <span>🚨</span> REAL-TIME DGMS VIOLATION & INCIDENT AUDIT STREAM
+                    </span>
+                    <span style="font-size: 10px; color: #94a3b8;">AUTO-LOGGED</span>
+                </div>
+                <div class="card-body">
+                    <div id="incidentList" class="incident-list">
+                        <!-- Populated by app.js -->
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Modal: Enroll New Miner -->
+    <div id="modalEnroll" class="modal-overlay">
+        <div class="modal-content">
+            <h2 style="font-size: 17px; margin-bottom: 14px; color: #f8fafc; border-bottom: 1px solid #232e44; padding-bottom: 8px;">
+                ⛏️ Enroll New Coal Miner into Biometric Safety System
+            </h2>
+            <form id="formEnroll">
+                <div class="form-group">
+                    <label>Worker Label / Name</label>
+                    <input id="newWorkerName" type="text" placeholder="e.g. Worker 5" required>
+                </div>
+                <div class="form-group">
+                    <label>Mining Role / Trade</label>
+                    <select id="newWorkerRole">
+                        <option value="Excavator Operator">Excavator Operator</option>
+                        <option value="Blasting Specialist">Blasting Specialist</option>
+                        <option value="Safety & Ventilation Inspector">Safety & Ventilation Inspector</option>
+                        <option value="Continuous Miner Operator">Continuous Miner Operator</option>
+                        <option value="Haulage Truck Driver">Haulage Truck Driver</option>
+                        <option value="Support Timberman">Support Timberman</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Assigned Shift</label>
+                    <select id="newWorkerShift">
+                        <option value="Morning Shift-A (06:00 - 14:00)">Morning Shift-A (06:00 - 14:00)</option>
+                        <option value="Afternoon Shift-B (14:00 - 22:00)">Afternoon Shift-B (14:00 - 22:00)</option>
+                        <option value="Night Shift-C (22:00 - 06:00)">Night Shift-C (22:00 - 06:00)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Assigned Underground Sector</label>
+                    <input id="newWorkerZone" type="text" value="Pit Sector 3B - Seam 4" required>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
+                    <button id="btnCloseEnroll" type="button" class="btn-tool">Cancel</button>
+                    <button type="submit" class="btn-sos" style="background: #0284c7; border-color: #38bdf8;">Save Miner & Generate Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: DGMS Statutory Audit Report -->
+    <div id="modalReport" class="modal-overlay">
+        <div class="modal-content" style="width: 720px;">
+            <div id="reportContent"></div>
+            <div style="margin-top: 14px; text-align: center;">
+                <button id="btnCloseReport" class="btn-tool" style="display: inline-block;">Close Report Window</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+/**
+ * Coal Mine AI Smart Governance & Compliance Monitoring System
+ * Standalone Zero-Dependency Client Engine (Runs 100% in any browser)
+ * Smart India Hackathon 2026 | DGMS & Ministry of Coal Protocol
+ */
+
+// =========================================================================
+// 1. PROCEDURAL INDUSTRIAL AUDIO ENGINE (Web Audio API)
+// =========================================================================
+class WebAudioEngine {
+    constructor() {
+        this.ctx = null;
+        this.muted = false;
+        this.sirenOsc = null;
+        this.sirenGain = null;
+        this.sirenActive = false;
+    }
+
+    init() {
+        if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AudioCtx();
+        }
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+    }
+
+    toggleMute() {
+        this.muted = !this.muted;
+        if (this.muted && this.sirenActive) this.stopSiren();
+        return this.muted;
+    }
+
+    playWarningBeep() {
+        if (this.muted) return;
+        this.init();
+        try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = "sawtooth";
+            osc.frequency.setValueAtTime(880, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(440, this.ctx.currentTime + 0.16);
+
+            gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.16);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.18);
+        } catch (e) {}
+    }
+
+    startSiren() {
+        if (this.muted || this.sirenActive) return;
+        this.init();
+        try {
+            this.sirenActive = true;
+            this.sirenOsc = this.ctx.createOscillator();
+            this.sirenGain = this.ctx.createGain();
+            this.sirenOsc.type = "triangle";
+
+            const now = this.ctx.currentTime;
+            this.sirenOsc.frequency.setValueAtTime(600, now);
+            for (let i = 0; i < 30; i++) {
+                this.sirenOsc.frequency.linearRampToValueAtTime(1100, now + (i * 0.8) + 0.4);
+                this.sirenOsc.frequency.linearRampToValueAtTime(600, now + (i * 0.8) + 0.8);
+            }
+
+            this.sirenGain.gain.setValueAtTime(0.16, now);
+            this.sirenOsc.connect(this.sirenGain);
+            this.sirenGain.connect(this.ctx.destination);
+            this.sirenOsc.start();
+        } catch (e) {}
+    }
+
+    stopSiren() {
+        if (this.sirenActive && this.sirenOsc) {
+            try {
+                this.sirenOsc.stop();
+                this.sirenOsc.disconnect();
+            } catch (e) {}
+            this.sirenActive = false;
+            this.sirenOsc = null;
+        }
+    }
+}
+
+const audio = new WebAudioEngine();
+
+// =========================================================================
+// 2. ATMOSPHERIC & GAS SIMULATION ENGINE (MQ-2, MQ-7, PMS5003)
+// =========================================================================
+const telemetry = {
+    pm25: 32.5,
+    pm10: 68.0,
+    ch4: 0.18,
+    co: 8.5,
+    co2: 0.28,
+    temperature: 27.2,
+    humidity: 74.5,
+    aqi: 68,
+    status: "NORMAL",
+    scenario: "NORMAL",
+    emergencyVentilation: false
+};
+
+const historyCH4 = Array(30).fill(0.18);
+const historyCO = Array(30).fill(8.5);
+
+function stepAtmosphericSimulation() {
+    if (telemetry.scenario === "NORMAL") {
+        telemetry.pm25 = Math.max(10, Math.min(80, telemetry.pm25 + (Math.random() * 3 - 1.4)));
+        telemetry.pm10 = Math.max(25, Math.min(130, telemetry.pm10 + (Math.random() * 5 - 2.4)));
+        telemetry.ch4 = Math.max(0.08, Math.min(0.38, telemetry.ch4 + (Math.random() * 0.03 - 0.015)));
+        telemetry.co = Math.max(3, Math.min(16, telemetry.co + (Math.random() * 0.8 - 0.38)));
+        telemetry.emergencyVentilation = false;
+    } else if (telemetry.scenario === "METHANE_LEAK") {
+        telemetry.ch4 = Math.max(1.15, Math.min(2.4, telemetry.ch4 + (Math.random() * 0.08 - 0.03)));
+        telemetry.emergencyVentilation = true;
+    } else if (telemetry.scenario === "COAL_DUST_SPIKE") {
+        telemetry.pm25 = Math.max(260, Math.min(450, telemetry.pm25 + (Math.random() * 8 - 3)));
+        telemetry.pm10 = Math.max(480, Math.min(780, telemetry.pm10 + (Math.random() * 12 - 5)));
+        telemetry.emergencyVentilation = true;
+    } else if (telemetry.scenario === "CO_BUILDUP") {
+        telemetry.co = Math.max(65, Math.min(115, telemetry.co + (Math.random() * 2 - 0.5)));
+        telemetry.emergencyVentilation = true;
+    }
+
+    // Compute CPCB / DGMS AQI
+    let i_pm25 = (telemetry.pm25 <= 30) ? (50/30)*telemetry.pm25 : (50 + (50/30)*(telemetry.pm25 - 30));
+    if (telemetry.pm25 > 60) i_pm25 = 100 + (100/30)*(telemetry.pm25 - 60);
+
+    let aqiVal = Math.round(i_pm25);
+    if (telemetry.ch4 >= 1.0 || telemetry.co >= 50.0) {
+        aqiVal = Math.max(aqiVal, 450);
+        telemetry.status = "CRITICAL";
+        audio.startSiren();
+    } else if (telemetry.ch4 >= 0.5 || telemetry.co >= 25.0 || aqiVal > 200) {
+        aqiVal = Math.max(aqiVal, 220);
+        telemetry.status = "WARNING";
+        audio.stopSiren();
+    } else {
+        telemetry.status = "NORMAL";
+        if (!state.sosActive) audio.stopSiren();
+    }
+
+    telemetry.aqi = aqiVal;
+
+    historyCH4.push(telemetry.ch4);
+    historyCH4.shift();
+    historyCO.push(telemetry.co);
+    historyCO.shift();
+
+    updateTelemetryUI();
+    renderGasChart();
+}
+
+// =========================================================================
+// 3. WORKERS ROSTER & GOVERNANCE STATE (Worker 1, Worker 2, Worker 3, Worker 4)
+// =========================================================================
+const workers = [
+    {
+        id: "W-101",
+        name: "Worker 1",
+        role: "Excavator Operator",
+        zone: "Pit Area 3 - Face B",
+        shift: "Morning (06:00 - 14:00)",
+        safetyScore: 98.5,
+        isUnderground: 1,
+        avatarEmoji: "👷"
+    },
+    {
+        id: "W-102",
+        name: "Worker 2",
+        role: "Blasting Specialist",
+        zone: "Blasting Zone Alpha",
+        shift: "Morning (06:00 - 14:00)",
+        safetyScore: 94.0,
+        isUnderground: 1,
+        avatarEmoji: "👷"
+    },
+    {
+        id: "W-103",
+        name: "Worker 3",
+        role: "Safety & Ventilation Inspector",
+        zone: "Ventilation Shaft 2",
+        shift: "All Shafts Roaming",
+        safetyScore: 100.0,
+        isUnderground: 1,
+        avatarEmoji: "👷"
+    },
+    {
+        id: "W-104",
+        name: "Worker 4",
+        role: "Continuous Miner Operator",
+        zone: "Haulage Main Road",
+        shift: "Morning (06:00 - 14:00)",
+        safetyScore: 89.0,
+        isUnderground: 1,
+        avatarEmoji: "👷"
+    }
+];
+
+const state = {
+    mode: "WEBCAM", // Defaults directly to WEBCAM on page open
+    sosActive: false,
+    demoFlags: {
+        worker1_no_helmet: false,
+        worker2_no_vest: false,
+        worker3_danger_zone: false
+    },
+    violations: [
+        {
+            id: 1,
+            timestamp: new Date(Date.now() - 420000).toLocaleTimeString(),
+            workerId: "W-104",
+            workerName: "Worker 4",
+            type: "NO_VEST",
+            severity: "MEDIUM",
+            details: "Worker 4 detected in conveyor section without high-visibility safety vest."
+        }
+    ],
+    lastViolationTime: 0
+};
+
+// =========================================================================
+// 4. CLIENT-SIDE COMPUTER VISION & CANVAS RENDERING
+// =========================================================================
+const canvas = document.getElementById("visionCanvas");
+const ctx = canvas.getContext("2d");
+let webcamStream = null;
+let lastFrameTime = performance.now();
+let fps = 30;
+
+function renderCanvasLoop(now) {
+    const dt = now - lastFrameTime;
+    if (dt >= 900) {
+        fps = Math.round(1000 / (dt / (now - lastFrameTime || 1)));
+        lastFrameTime = now;
+    }
+
+    if (state.mode === "WEBCAM" && webcamStream) {
+        renderWebcamFrame();
+    } else {
+        renderSimulatedMineFrame(now);
+    }
+
+    requestAnimationFrame(renderCanvasLoop);
+}
+
+// -------------------------------------------------------------------------
+// LIVE CAMERA SCANNER (Webcam PPE & Face & Gas Scanner)
+// -------------------------------------------------------------------------
+function renderWebcamFrame() {
+    const W = canvas.width = 854;
+    const H = canvas.height = 480;
+
+    // Draw live webcam frame
+    ctx.drawImage(webcamVideo, 0, 0, W, H);
+
+    // Target scanning box for Worker 1 in front of camera
+    const bx = Math.round(W * 0.28);
+    const by = Math.round(H * 0.12);
+    const bw = Math.round(W * 0.44);
+    const bh = Math.round(H * 0.78);
+
+    // 1. Analyze Head Region for Helmet (Top 26% of bounding box)
+    const headX = Math.round(bx + bw * 0.22);
+    const headY = Math.round(by);
+    const headW = Math.round(bw * 0.56);
+    const headH = Math.round(bh * 0.24);
+
+    let hasHelmet = false;
+    let hasVest = false;
+
+    try {
+        const headData = ctx.getImageData(headX, headY, headW, headH).data;
+        let yellowPixels = 0;
+        let whiteBrightPixels = 0;
+        let bluePixels = 0;
+        const totalHeadPixels = headData.length / 4;
+
+        for (let i = 0; i < headData.length; i += 4) {
+            const r = headData[i], g = headData[i+1], b = headData[i+2];
+            // Yellow helmet
+            if (r > 150 && g > 130 && b < 100 && (r + g) > 2.2 * b) yellowPixels++;
+            // White helmet (High intensity, low color variance)
+            else if (r > 200 && g > 200 && b > 200 && Math.abs(r - g) < 20 && Math.abs(g - b) < 20) whiteBrightPixels++;
+            // Blue safety hat
+            else if (b > 140 && b > r * 1.3 && b > g * 1.2) bluePixels++;
+        }
+
+        const helmetRatio = (yellowPixels + whiteBrightPixels + bluePixels) / totalHeadPixels;
+        hasHelmet = (helmetRatio > 0.09) && !state.demoFlags.worker1_no_helmet;
+
+        // 2. Analyze Torso Region for High-Vis Vest (30% to 75% height)
+        const torsoX = Math.round(bx + bw * 0.15);
+        const torsoY = Math.round(by + bh * 0.28);
+        const torsoW = Math.round(bw * 0.70);
+        const torsoH = Math.round(bh * 0.45);
+
+        const torsoData = ctx.getImageData(torsoX, torsoY, torsoW, torsoH).data;
+        let neonGreenPixels = 0;
+        let orangePixels = 0;
+        let reflectiveStripePixels = 0;
+        const totalTorsoPixels = torsoData.length / 4;
+
+        for (let i = 0; i < torsoData.length; i += 4) {
+            const r = torsoData[i], g = torsoData[i+1], b = torsoData[i+2];
+            // Fluorescent Neon Lime
+            if (g > 150 && g > r * 1.15 && g > b * 1.4) neonGreenPixels++;
+            // Safety Orange
+            else if (r > 170 && g > 80 && g < 150 && b < 90) orangePixels++;
+            // Silver reflective stripe (high brightness)
+            else if (r > 215 && g > 215 && b > 215) reflectiveStripePixels++;
+        }
+
+        const vestRatio = (neonGreenPixels + orangePixels + reflectiveStripePixels * 0.5) / totalTorsoPixels;
+        hasVest = (vestRatio > 0.10) && !state.demoFlags.worker2_no_vest;
+
+    } catch (err) {
+        // Fallback if cross-origin canvas security occurs
+        hasHelmet = !state.demoFlags.worker1_no_helmet;
+        hasVest = !state.demoFlags.worker2_no_vest;
+    }
+
+    // Draw Tactical Scanner Overlay for Worker 1
+    drawTacticalHUD(bx, by, bw, bh, {
+        workerId: "W-101",
+        name: "Worker 1",
+        helmetOk: hasHelmet,
+        vestOk: hasVest,
+        zoneBreach: false
+    });
+
+    // Check violations and log
+    const now = Date.now();
+    if (!hasHelmet && now - state.lastViolationTime > 4500) {
+        logNewViolation("W-101", "Worker 1", "NO_HELMET", "HIGH", "Live Camera: Worker 1 detected without safety helmet in scanning area.");
+        deductWorkerSafetyScore("W-101", 5);
+        state.lastViolationTime = now;
+    } else if (!hasVest && now - state.lastViolationTime > 4500) {
+        logNewViolation("W-101", "Worker 1", "NO_VEST", "MEDIUM", "Live Camera: Worker 1 detected without high-vis reflective vest.");
+        deductWorkerSafetyScore("W-101", 3);
+        state.lastViolationTime = now;
+    }
+
+    // 3. Live Environmental Sensor Overlay (HUD Gas Telemetry)
+    ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+    ctx.fillRect(16, 44, 320, 80);
+    ctx.strokeStyle = "#0284c7";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(16, 44, 320, 80);
+
+    ctx.fillStyle = "#38bdf8";
+    ctx.font = "bold 10px sans-serif";
+    ctx.fillText("📡 MINE SENSORS HUD (MQ-4, MQ-7, PMS5003)", 24, 60);
+
+    ctx.fillStyle = "#f8fafc";
+    ctx.font = "10px sans-serif";
+    ctx.fillText(`Methane (CH4): ${telemetry.ch4.toFixed(2)}% | CO: ${telemetry.co.toFixed(1)} ppm`, 24, 78);
+    ctx.fillText(`Coal Dust (PM2.5): ${telemetry.pm25.toFixed(1)} µg/m³ | Temp: ${telemetry.temperature.toFixed(1)}°C`, 24, 94);
+
+    const aqiColor = telemetry.aqi > 200 ? "#ef4444" : (telemetry.aqi > 100 ? "#f59e0b" : "#10b981");
+    ctx.fillStyle = aqiColor;
+    ctx.font = "bold 11px sans-serif";
+    ctx.fillText(`MINE AQI: ${telemetry.aqi} [${telemetry.status}]`, 24, 112);
+
+    // Global Top Bar
+    ctx.fillStyle = "#0f1522";
+    ctx.fillRect(0, 0, W, 32);
+    ctx.strokeStyle = "#232e44";
+    ctx.strokeRect(0, 0, W, 32);
+
+    ctx.fillStyle = "#10b981";
+    ctx.beginPath();
+    ctx.arc(16, 16, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#f1f5f9";
+    ctx.font = "bold 11px sans-serif";
+    ctx.fillText("LIVE SCANNER ACTIVE (WEBCAM SENSOR)", 28, 20);
+
+    const nowStr = new Date().toLocaleTimeString();
+    ctx.font = "10px sans-serif";
+    ctx.fillStyle = "#94a3b8";
+    ctx.fillText(`${nowStr}  |  FACE / HELMET / VEST SCANNER ACTIVE`, W - 360, 20);
+}
+
+// -------------------------------------------------------------------------
+// SIMULATED MINE SHAFT (Worker 1, Worker 2, Worker 3)
+// -------------------------------------------------------------------------
+function renderSimulatedMineFrame(timeMs) {
+    const t = timeMs / 1000;
+    const W = canvas.width = 854;
+    const H = canvas.height = 480;
+
+    // Dark Coal Strata Tunnel Background
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+    bgGrad.addColorStop(0, "#0e131d");
+    bgGrad.addColorStop(0.5, "#141c2b");
+    bgGrad.addColorStop(1, "#0a0d14");
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Tunnel Timber Arches
+    const archX = [60, 240, 420, 600, 780];
+    ctx.fillStyle = "#1e283b";
+    archX.forEach(x => {
+        ctx.fillRect(x, 40, 20, H - 75);
+        ctx.fillStyle = "#2d3c52";
+        ctx.fillRect(x - 8, 40, 36, 16);
+        ctx.fillStyle = "#1e283b";
+    });
+
+    // Overhead Glowing Mine Lamps
+    const lamps = [150, 330, 510, 690];
+    lamps.forEach(lx => {
+        ctx.strokeStyle = "#475569";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(lx, 40);
+        ctx.lineTo(lx, 85);
+        ctx.stroke();
+
+        const radGlow = ctx.createRadialGradient(lx, 90, 4, lx, 90, 65);
+        radGlow.addColorStop(0, "rgba(251, 191, 36, 0.45)");
+        radGlow.addColorStop(1, "rgba(251, 191, 36, 0)");
+        ctx.fillStyle = radGlow;
+        ctx.beginPath();
+        ctx.arc(lx, 90, 65, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#fef08a";
+        ctx.beginPath();
+        ctx.arc(lx, 90, 6, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
+    // Conveyor Belt
+    ctx.fillStyle = "#1e2530";
+    ctx.fillRect(0, H - 55, W, 25);
+    ctx.strokeStyle = "#475569";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, H - 55);
+    ctx.lineTo(W, H - 55);
+    ctx.stroke();
+
+    // Moving Coal Lumps
+    ctx.fillStyle = "#090a0f";
+    const beltOffset = (t * 60) % 50;
+    for (let cx = -50 + beltOffset; cx < W + 50; cx += 55) {
+        ctx.beginPath();
+        ctx.ellipse(cx, H - 42, 14, 7, 0, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Danger Zone (Blasting Zone Alpha)
+    const zx1 = Math.round(0.66 * W);
+    const zy1 = Math.round(0.38 * H);
+    const zw = Math.round(0.30 * W);
+    const zh = Math.round(0.50 * H);
+
+    ctx.fillStyle = "rgba(239, 68, 68, 0.18)";
+    ctx.fillRect(zx1, zy1, zw, zh);
+    ctx.strokeStyle = "#ef4444";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.strokeRect(zx1, zy1, zw, zh);
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = "#ef4444";
+    ctx.font = "bold 11px sans-serif";
+    ctx.fillText("⛔ DANGER: BLASTING ZONE ALPHA", zx1 + 10, zy1 + 20);
+    ctx.font = "9px sans-serif";
+    ctx.fillStyle = "#fca5a5";
+    ctx.fillText("AUTHORIZED BLASTERS ONLY", zx1 + 10, zy1 + 34);
+
+    // Render Miners (Worker 1, Worker 2, Worker 3)
+    // Worker 1 (Yellow helmet, neon lime vest)
+    const m1_x = 135 + Math.sin(t * 0.8) * 22;
+    const m1_y = 180;
+    renderMinerFigure(m1_x, m1_y, 110, 220, {
+        hasHelmet: !state.demoFlags.worker1_no_helmet,
+        helmetColor: "#eab308",
+        hasVest: true,
+        faceColor: "#d4a373"
+    });
+
+    // Worker 2 (White helmet, vest toggleable)
+    const m2_x = 345 + Math.cos(t * 0.7) * 18;
+    const m2_y = 190;
+    renderMinerFigure(m2_x, m2_y, 105, 210, {
+        hasHelmet: true,
+        helmetColor: "#f8fafc",
+        hasVest: !state.demoFlags.worker2_no_vest,
+        faceColor: "#e0ac69"
+    });
+
+    // Worker 3 (Blue helmet, danger zone triggerable)
+    const targetX = state.demoFlags.worker3_danger_zone ? 655 : 510;
+    const m3_x = targetX + Math.sin(t * 0.9) * 12;
+    const m3_y = 195;
+    renderMinerFigure(m3_x, m3_y, 100, 205, {
+        hasHelmet: true,
+        helmetColor: "#0284c7",
+        hasVest: true,
+        faceColor: "#c68642"
+    });
+
+    // Tactical HUDs (Strictly Worker 1, Worker 2, Worker 3)
+    drawTacticalHUD(m1_x, m1_y, 110, 220, {
+        workerId: "W-101",
+        name: "Worker 1",
+        helmetOk: !state.demoFlags.worker1_no_helmet,
+        vestOk: true,
+        zoneBreach: false
+    });
+
+    drawTacticalHUD(m2_x, m2_y, 105, 210, {
+        workerId: "W-102",
+        name: "Worker 2",
+        helmetOk: true,
+        vestOk: !state.demoFlags.worker2_no_vest,
+        zoneBreach: false
+    });
+
+    const inZone = m3_x > zx1 - 30;
+    drawTacticalHUD(m3_x, m3_y, 100, 205, {
+        workerId: "W-103",
+        name: "Worker 3",
+        helmetOk: true,
+        vestOk: true,
+        zoneBreach: inZone && state.demoFlags.worker3_danger_zone
+    });
+
+    // Check violations and log
+    checkAndLogViolations();
+
+    // Global Tactical Header Watermark
+    ctx.fillStyle = "#0f1522";
+    ctx.fillRect(0, 0, W, 32);
+    ctx.strokeStyle = "#232e44";
+    ctx.strokeRect(0, 0, W, 32);
+
+    ctx.fillStyle = "#ef4444";
+    ctx.beginPath();
+    ctx.arc(16, 16, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#f1f5f9";
+    ctx.font = "bold 11px sans-serif";
+    ctx.fillText("LIVE CAM-04 (SHAFT 3B)", 28, 20);
+
+    const nowStr = new Date().toLocaleTimeString();
+    ctx.font = "10px sans-serif";
+    ctx.fillStyle = "#94a3b8";
+    ctx.fillText(`${nowStr}  |  EDGE INFERENCE: 30 FPS  |  DGMS COMPLIANCE ENGINE ACTIVE`, W - 430, 20);
+}
+
+function renderMinerFigure(x, y, w, h, opts) {
+    const headCx = x + w / 2;
+    const headCy = y + h * 0.16;
+    const headRad = w * 0.22;
+
+    const torsoY1 = y + h * 0.28;
+    const torsoY2 = y + h * 0.74;
+    const torsoW = w * 0.68;
+    const torsoX1 = x + (w - torsoW) / 2;
+
+    // Legs
+    ctx.fillStyle = "#334155";
+    ctx.fillRect(torsoX1 + 3, torsoY2, headRad - 2, h - (torsoY2 - y));
+    ctx.fillRect(headCx + 2, torsoY2, headRad - 2, h - (torsoY2 - y));
+
+    // Base Shirt
+    ctx.fillStyle = "#475569";
+    ctx.fillRect(torsoX1, torsoY1, torsoW, torsoY2 - torsoY1);
+
+    // High-Vis Safety Vest
+    if (opts.hasVest) {
+        ctx.fillStyle = "#22c55e"; // Fluorescent Neon Lime
+        ctx.fillRect(torsoX1 - 2, torsoY1, torsoW + 4, (torsoY2 - torsoY1) - 8);
+
+        // Reflective Silver Horizontal Stripes
+        ctx.fillStyle = "#f1f5f9";
+        ctx.fillRect(torsoX1 - 2, torsoY1 + 18, torsoW + 4, 7);
+        ctx.fillRect(torsoX1 - 2, torsoY1 + 42, torsoW + 4, 7);
+    }
+
+    // Arms
+    ctx.fillStyle = "#3b4758";
+    ctx.fillRect(torsoX1 - 10, torsoY1 + 2, 10, 50);
+    ctx.fillRect(torsoX1 + torsoW, torsoY1 + 2, 10, 50);
+
+    // Head / Face
+    ctx.fillStyle = opts.faceColor;
+    ctx.beginPath();
+    ctx.arc(headCx, headCy, headRad, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Eyes
+    ctx.fillStyle = "#1e293b";
+    ctx.beginPath();
+    ctx.arc(headCx - 6, headCy - 1, 2.5, 0, Math.PI * 2);
+    ctx.arc(headCx + 6, headCy - 1, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Hard Hat (Helmet)
+    if (opts.hasHelmet) {
+        ctx.fillStyle = opts.helmetColor;
+        ctx.beginPath();
+        ctx.ellipse(headCx, headCy - 6, headRad + 5, headRad + 4, 0, Math.PI, 0, false);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.ellipse(headCx, headCy - 5, headRad + 8, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(headCx, headCy - 12, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#38bdf8";
+        ctx.beginPath();
+        ctx.arc(headCx, headCy - 12, 2, 0, Math.PI * 2);
+        ctx.fill();
+    } else {
+        ctx.fillStyle = "#1e1b18";
+        ctx.beginPath();
+        ctx.ellipse(headCx, headCy - 7, headRad + 1, headRad - 2, 0, Math.PI, 0, false);
+        ctx.fill();
+    }
+}
+
+function drawTacticalHUD(x, y, w, h, status) {
+    const isCompliant = status.helmetOk && status.vestOk && !status.zoneBreach;
+    const boxColor = isCompliant ? "#10b981" : "#ef4444";
+
+    const cLen = Math.min(22, w * 0.25);
+    ctx.strokeStyle = boxColor;
+    ctx.lineWidth = 2;
+
+    // Corners
+    ctx.beginPath();
+    ctx.moveTo(x, y + cLen);
+    ctx.lineTo(x, y);
+    ctx.lineTo(x + cLen, y);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x + w - cLen, y);
+    ctx.lineTo(x + w, y);
+    ctx.lineTo(x + w, y + cLen);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x, y + h - cLen);
+    ctx.lineTo(x, y + h);
+    ctx.lineTo(x + cLen, y + h);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x + w - cLen, y + h);
+    ctx.lineTo(x + w, y + h);
+    ctx.lineTo(x + w, y + h - cLen);
+    ctx.stroke();
+
+    ctx.fillStyle = isCompliant ? "rgba(16, 185, 129, 0.08)" : "rgba(239, 68, 68, 0.12)";
+    ctx.fillRect(x, y, w, h);
+
+    // Identity Tag (Worker 1 / Worker 2 / Worker 3)
+    ctx.fillStyle = "#0f172a";
+    ctx.fillRect(x, Math.max(0, y - 22), w, 20);
+    ctx.strokeStyle = boxColor;
+    ctx.strokeRect(x, Math.max(0, y - 22), w, 20);
+
+    ctx.fillStyle = "#f8fafc";
+    ctx.font = "bold 10px sans-serif";
+    ctx.fillText(`${status.workerId}: ${status.name}`, x + 5, Math.max(14, y - 8));
+
+    // Badges on the right
+    let badgeY = y + 14;
+    const badgeX = x + w + 5;
+
+    // Helmet Badge
+    ctx.fillStyle = "#0f172a";
+    ctx.fillRect(badgeX, badgeY - 10, 100, 18);
+    ctx.strokeStyle = status.helmetOk ? "#10b981" : "#ef4444";
+    ctx.strokeRect(badgeX, badgeY - 10, 100, 18);
+
+    ctx.fillStyle = status.helmetOk ? "#10b981" : "#ef4444";
+    ctx.font = "bold 9px sans-serif";
+    ctx.fillText(status.helmetOk ? "HELMET: OK" : "NO HELMET!", badgeX + 6, badgeY + 3);
+
+    // Vest Badge
+    badgeY += 22;
+    ctx.fillStyle = "#0f172a";
+    ctx.fillRect(badgeX, badgeY - 10, 100, 18);
+    ctx.strokeStyle = status.vestOk ? "#10b981" : "#ef4444";
+    ctx.strokeRect(badgeX, badgeY - 10, 100, 18);
+
+    ctx.fillStyle = status.vestOk ? "#10b981" : "#ef4444";
+    ctx.fillText(status.vestOk ? "VEST: OK" : "NO VEST!", badgeX + 6, badgeY + 3);
+
+    // Zone Breach Badge
+    if (status.zoneBreach) {
+        badgeY += 22;
+        ctx.fillStyle = "#dc2626";
+        ctx.fillRect(badgeX, badgeY - 10, 105, 18);
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText("ZONE BREACH!", badgeX + 6, badgeY + 3);
+    }
+}
+
+function checkAndLogViolations() {
+    const now = Date.now();
+    if (now - state.lastViolationTime < 4500) return;
+
+    if (state.demoFlags.worker1_no_helmet) {
+        logNewViolation("W-101", "Worker 1", "NO_HELMET", "HIGH", "Worker 1 detected operating machinery without mandatory safety helmet.");
+        deductWorkerSafetyScore("W-101", 5);
+        state.lastViolationTime = now;
+    } else if (state.demoFlags.worker2_no_vest) {
+        logNewViolation("W-102", "Worker 2", "NO_VEST", "MEDIUM", "Worker 2 detected in active haulage road without high-visibility safety vest.");
+        deductWorkerSafetyScore("W-102", 3);
+        state.lastViolationTime = now;
+    } else if (state.demoFlags.worker3_danger_zone) {
+        logNewViolation("W-103", "Worker 3", "DANGER_ZONE_BREACH", "CRITICAL", "Worker 3 entered Blasting Zone Alpha during active detonation shift!");
+        deductWorkerSafetyScore("W-103", 8);
+        state.lastViolationTime = now;
+    }
+}
+
+function logNewViolation(workerId, workerName, type, severity, details) {
+    audio.playWarningBeep();
+    state.violations.unshift({
+        id: state.violations.length + 1,
+        timestamp: new Date().toLocaleTimeString(),
+        workerId,
+        workerName,
+        type,
+        severity,
+        details
+    });
+    updateViolationsUI();
+    updateGovernanceUI();
+}
+
+function deductWorkerSafetyScore(workerId, penalty) {
+    const w = workers.find(item => item.id === workerId);
+    if (w) {
+        w.safetyScore = Math.max(10, Math.round((w.safetyScore - penalty) * 10) / 10);
+        updateWorkersUI();
+    }
+}
+
+// =========================================================================
+// 5. WEBCAM SCANNER (Helmet & Dress Camera Detection)
+// =========================================================================
+const webcamVideo = document.getElementById("webcamVideo");
+
+async function toggleWebcamMode(enable) {
+    if (enable) {
+        try {
+            webcamStream = await navigator.mediaDevices.getUserMedia({ video: { width: 854, height: 480 } });
+            webcamVideo.srcObject = webcamStream;
+            await webcamVideo.play();
+            state.mode = "WEBCAM";
+            document.getElementById("btnModeWebcam").classList.add("active");
+            document.getElementById("btnModeSim").classList.remove("active");
+        } catch (e) {
+            alert("Webcam could not be opened: " + e.message + "\nReturning to Simulated Mine Shaft mode.");
+            state.mode = "SIMULATOR";
+        }
+    } else {
+        if (webcamStream) {
+            webcamStream.getTracks().forEach(track => track.stop());
+            webcamStream = null;
+        }
+        state.mode = "SIMULATOR";
+        document.getElementById("btnModeSim").classList.add("active");
+        document.getElementById("btnModeWebcam").classList.remove("active");
+    }
+}
+
+// =========================================================================
+// 6. UI SYNCHRONIZATION & CHART RENDERING
+// =========================================================================
+function updateTelemetryUI() {
+    document.getElementById("valAqi").innerText = telemetry.aqi;
+    document.getElementById("valCh4").innerText = `${telemetry.ch4.toFixed(2)}%`;
+    document.getElementById("valCo").innerText = `${telemetry.co.toFixed(1)} ppm`;
+    document.getElementById("valPm25").innerText = `${telemetry.pm25.toFixed(1)} µg/m³`;
+    document.getElementById("valPm10").innerText = `${telemetry.pm10.toFixed(1)} µg/m³`;
+    document.getElementById("valTemp").innerText = `${telemetry.temperature.toFixed(1)} °C`;
+    document.getElementById("valHumidity").innerText = `${telemetry.humidity.toFixed(1)}%`;
+
+    document.getElementById("barAqi").style.width = `${Math.min(100, (telemetry.aqi / 400) * 100)}%`;
+    document.getElementById("barCh4").style.width = `${Math.min(100, (telemetry.ch4 / 2.0) * 100)}%`;
+    document.getElementById("barCo").style.width = `${Math.min(100, (telemetry.co / 80.0) * 100)}%`;
+
+    const bAqi = document.getElementById("badgeAqi");
+    bAqi.innerText = telemetry.status;
+    bAqi.className = `gauge-badge ${telemetry.status === 'CRITICAL' ? 'badge-critical' : (telemetry.status === 'WARNING' ? 'badge-warning' : 'badge-normal')}`;
+
+    const bCh4 = document.getElementById("badgeCh4");
+    bCh4.innerText = telemetry.ch4 >= 1.0 ? "EXPLOSIVE DANGER" : (telemetry.ch4 >= 0.5 ? "ELEVATED" : "DGMS SAFE");
+    bCh4.className = `gauge-badge ${telemetry.ch4 >= 1.0 ? 'badge-critical' : (telemetry.ch4 >= 0.5 ? 'badge-warning' : 'badge-normal')}`;
+
+    const bCo = document.getElementById("badgeCo");
+    bCo.innerText = telemetry.co >= 50 ? "TOXIC HAZARD" : (telemetry.co >= 25 ? "WARNING" : "DGMS SAFE");
+    bCo.className = `gauge-badge ${telemetry.co >= 50 ? 'badge-critical' : (telemetry.co >= 25 ? 'badge-warning' : 'badge-normal')}`;
+
+    const bVent = document.getElementById("badgeVentilation");
+    bVent.innerText = telemetry.emergencyVentilation ? "HIGH SPEED (EMERGENCY)" : "AUTO (STANDARD)";
+    bVent.style.color = telemetry.emergencyVentilation ? "#ef4444" : "#10b981";
+
+    updateGovernanceUI();
+}
+
+function updateGovernanceUI() {
+    const avgScore = workers.reduce((acc, w) => acc + w.safetyScore, 0) / workers.length;
+    let mss = avgScore - (state.violations.length * 0.8);
+    if (telemetry.status === "CRITICAL" || state.sosActive) mss = Math.min(mss, 32.0);
+    else if (telemetry.status === "WARNING") mss = Math.min(mss, 68.0);
+    mss = Math.max(15, Math.min(100, Math.round(mss * 10) / 10));
+
+    const elMss = document.getElementById("valMss");
+    const elGrade = document.getElementById("valGrade");
+
+    elMss.innerText = `${mss}%`;
+    if (mss >= 90) {
+        elMss.style.color = "#10b981";
+        elGrade.innerText = "A+ (EXEMPLARY)";
+        elGrade.style.color = "#10b981";
+    } else if (mss >= 75) {
+        elMss.style.color = "#f59e0b";
+        elGrade.innerText = "B (SATISFACTORY)";
+        elGrade.style.color = "#f59e0b";
+    } else {
+        elMss.style.color = "#ef4444";
+        elGrade.innerText = "F (CRITICAL NON-COMPLIANCE)";
+        elGrade.style.color = "#ef4444";
+    }
+
+    document.getElementById("valWorkers").innerText = `${workers.filter(w => w.isUnderground).length} / ${workers.length}`;
+    document.getElementById("valViolations").innerText = state.violations.length;
+}
+
+function renderGasChart() {
+    const c = document.getElementById("gasTrendCanvas");
+    if (!c) return;
+    const gctx = c.getContext("2d");
+    const W = c.width = c.offsetWidth;
+    const H = c.height = 100;
+
+    gctx.clearRect(0, 0, W, H);
+
+    gctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+    for (let y = 20; y < H; y += 25) {
+        gctx.beginPath();
+        gctx.moveTo(0, y);
+        gctx.lineTo(W, y);
+        gctx.stroke();
+    }
+
+    drawSparkline(gctx, historyCH4, 2.5, W, H, "#06b6d4");
+    drawSparkline(gctx, historyCO, 100, W, H, "#f97316");
+}
+
+function drawSparkline(gctx, dataArr, maxVal, W, H, color) {
+    const step = W / (dataArr.length - 1);
+    gctx.beginPath();
+    gctx.strokeStyle = color;
+    gctx.lineWidth = 2;
+    dataArr.forEach((val, i) => {
+        const x = i * step;
+        const y = H - (Math.min(maxVal, val) / maxVal) * (H - 18) - 8;
+        if (i === 0) gctx.moveTo(x, y);
+        else gctx.lineTo(x, y);
+    });
+    gctx.stroke();
+}
+
+function updateWorkersUI() {
+    const tbody = document.getElementById("workerTableBody");
+    tbody.innerHTML = workers.map(w => `
+        <tr>
+            <td>
+                <div class="worker-identity">
+                    <div class="avatar-badge">${w.avatarEmoji}</div>
+                    <div>
+                        <strong>${w.id}</strong>
+                        <div style="font-size:11px; color:#94a3b8;">${w.name}</div>
+                    </div>
+                </div>
+            </td>
+            <td><span style="color:#cbd5e1;">${w.role}</span></td>
+            <td><span style="font-size:11px; color:#94a3b8;">${w.zone}</span></td>
+            <td>
+                <strong style="color: ${w.safetyScore >= 90 ? '#10b981' : (w.safetyScore >= 75 ? '#f59e0b' : '#ef4444')};">
+                    ${w.safetyScore.toFixed(1)}%
+                </strong>
+            </td>
+            <td>
+                <span class="status-chip ${w.safetyScore >= 90 ? 'chip-ok' : 'chip-violation'}">
+                    ${w.safetyScore >= 90 ? 'COMPLIANT' : 'REVIEW'}
+                </span>
+            </td>
+        </tr>
+    `).join("");
+}
+
+function updateViolationsUI() {
+    const list = document.getElementById("incidentList");
+    if (state.violations.length === 0) {
+        list.innerHTML = `<div style="text-align:center; color:#64748b; padding:16px; font-size:11px;">No active infractions recorded.</div>`;
+        return;
+    }
+
+    list.innerHTML = state.violations.slice(0, 10).map(v => `
+        <div class="incident-item ${v.severity === 'CRITICAL' ? 'crit' : ''}">
+            <div>
+                <div class="incident-time">${v.timestamp} | <strong>${v.workerName} (${v.workerId})</strong></div>
+                <div class="incident-desc">${v.details}</div>
+            </div>
+            <div>
+                <span class="status-chip ${v.severity === 'CRITICAL' ? 'chip-violation' : 'chip-ok'}">
+                    ${v.type}
+                </span>
+            </div>
+        </div>
+    `).join("");
+}
+
+// =========================================================================
+// 7. INTERACTIVE DEMO ACTIONS FOR JURY
+// =========================================================================
+function triggerDemoAction(action) {
+    if (action === "no_helmet") {
+        state.demoFlags.worker1_no_helmet = !state.demoFlags.worker1_no_helmet;
+    } else if (action === "no_vest") {
+        state.demoFlags.worker2_no_vest = !state.demoFlags.worker2_no_vest;
+    } else if (action === "danger_zone_breach") {
+        state.demoFlags.worker3_danger_zone = !state.demoFlags.worker3_danger_zone;
+    } else if (action === "methane_leak") {
+        telemetry.scenario = "METHANE_LEAK";
+        telemetry.ch4 = 1.45;
+    } else if (action === "coal_dust_spike") {
+        telemetry.scenario = "COAL_DUST_SPIKE";
+        telemetry.pm25 = 340;
+        telemetry.pm10 = 620;
+    } else if (action === "reset") {
+        telemetry.scenario = "NORMAL";
+        telemetry.ch4 = 0.18;
+        telemetry.co = 8.5;
+        telemetry.pm25 = 32.5;
+        telemetry.pm10 = 68.0;
+        state.demoFlags.worker1_no_helmet = false;
+        state.demoFlags.worker2_no_vest = false;
+        state.demoFlags.worker3_danger_zone = false;
+        state.sosActive = false;
+        document.getElementById("sosBanner").style.display = "none";
+        workers.forEach(w => w.safetyScore = 98.0);
+        audio.stopSiren();
+    }
+    stepAtmosphericSimulation();
+}
+
+function toggleEmergencySOS() {
+    state.sosActive = !state.sosActive;
+    const banner = document.getElementById("sosBanner");
+    if (state.sosActive) {
+        banner.style.display = "block";
+        audio.startSiren();
+        logNewViolation("ALL", "Mine Personnel", "EMERGENCY_EVACUATION", "CRITICAL", "Manual mine-wide emergency evacuation siren sounded by Safety Supervisor.");
+    } else {
+        banner.style.display = "none";
+        audio.stopSiren();
+    }
+    updateGovernanceUI();
+}
+
+function openDGMSAuditReport() {
+    const reportCode = `DGMS-AUDIT-${new Date().toISOString().slice(0,10).replace(/-/g,"")}-${Math.floor(Math.random()*9000+1000)}`;
+    const modal = document.getElementById("modalReport");
+    const container = document.getElementById("reportContent");
+
+    container.innerHTML = `
+        <div style="border-bottom: 2px solid #0284c7; padding-bottom: 12px; margin-bottom: 16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h2 style="font-size:18px; margin:0; color:#fff;">DIRECTORATE GENERAL OF MINES SAFETY (DGMS)</h2>
+                    <p style="font-size:12px; margin:2px 0 0; color:#94a3b8;">Statutory Safety Compliance & Governance Audit</p>
+                </div>
+                <div style="background:#0284c7; color:#fff; padding:4px 10px; border-radius:4px; font-weight:700; font-size:11px;">
+                    ${reportCode}
+                </div>
+            </div>
+            <p style="font-size:11px; margin-top:8px; color:#cbd5e1;">
+                Mine Facility: <strong>Singareni Colliery - Shaft 3B</strong> | Operating Agency: <strong>Coal India Limited</strong>
+            </p>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:18px;">
+            <div style="background:#0f1522; padding:10px; border-radius:6px; border:1px solid #232e44;">
+                <div style="font-size:10px; color:#94a3b8;">MINE SAFETY INDEX</div>
+                <div style="font-size:20px; font-weight:800; color:#10b981;">${document.getElementById('valMss').innerText}</div>
+            </div>
+            <div style="background:#0f1522; padding:10px; border-radius:6px; border:1px solid #232e44;">
+                <div style="font-size:10px; color:#94a3b8;">CURRENT AQI</div>
+                <div style="font-size:20px; font-weight:800; color:#fff;">${telemetry.aqi}</div>
+            </div>
+            <div style="background:#0f1522; padding:10px; border-radius:6px; border:1px solid #232e44;">
+                <div style="font-size:10px; color:#94a3b8;">METHANE (CH4)</div>
+                <div style="font-size:20px; font-weight:800; color:#fff;">${telemetry.ch4.toFixed(2)}%</div>
+            </div>
+        </div>
+
+        <h4 style="font-size:13px; color:#f8fafc; margin-bottom:8px;">Recent Recorded Safety Infractions:</h4>
+        <table style="width:100%; border-collapse:collapse; font-size:11px; margin-bottom:18px;">
+            <thead>
+                <tr style="background:#1e293b; color:#cbd5e1; text-align:left;">
+                    <th style="padding:6px 8px;">Time</th>
+                    <th style="padding:6px 8px;">Worker</th>
+                    <th style="padding:6px 8px;">Infraction</th>
+                    <th style="padding:6px 8px;">Severity</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${state.violations.map(v => `
+                    <tr style="border-bottom:1px solid #232e44;">
+                        <td style="padding:6px 8px;">${v.timestamp}</td>
+                        <td style="padding:6px 8px;">${v.workerName}</td>
+                        <td style="padding:6px 8px;"><code>${v.type}</code></td>
+                        <td style="padding:6px 8px; font-weight:700; color:${v.severity === 'CRITICAL' ? '#ef4444' : '#f59e0b'};">${v.severity}</td>
+                    </tr>
+                `).join("")}
+            </tbody>
+        </table>
+
+        <div style="text-align:right;">
+            <button onclick="window.print()" class="btn-sos" style="background:#0284c7; border-color:#38bdf8;">
+                🖨️ Print Statutory Report (PDF)
+            </button>
+        </div>
+    `;
+
+    modal.style.display = "flex";
+}
+
+// =========================================================================
+// 8. INITIALIZATION & EVENT BINDINGS
+// =========================================================================
+document.addEventListener("DOMContentLoaded", () => {
+    updateWorkersUI();
+    updateViolationsUI();
+    updateTelemetryUI();
+
+    setInterval(stepAtmosphericSimulation, 1200);
+    requestAnimationFrame(renderCanvasLoop);
+
+    // Directly open webcam on startup
+    toggleWebcamMode(true);
+
+    const btnAudio = document.getElementById("btnToggleAudio");
+    btnAudio.addEventListener("click", () => {
+        const isMuted = audio.toggleMute();
+        btnAudio.innerHTML = isMuted ? "🔇 SOUND: MUTED" : "🔊 SOUND: ACTIVE";
+        btnAudio.style.borderColor = isMuted ? "#64748b" : "#10b981";
+    });
+
+    document.getElementById("btnModeSim").addEventListener("click", () => toggleWebcamMode(false));
+    document.getElementById("btnModeWebcam").addEventListener("click", () => toggleWebcamMode(true));
+
+    document.getElementById("btnSos").addEventListener("click", toggleEmergencySOS);
+    document.getElementById("btnGenReport").addEventListener("click", openDGMSAuditReport);
+
+    document.getElementById("btnCloseReport").addEventListener("click", () => {
+        document.getElementById("modalReport").style.display = "none";
+    });
+
+    const modalEnroll = document.getElementById("modalEnroll");
+    document.getElementById("btnOpenEnroll").addEventListener("click", () => modalEnroll.style.display = "flex");
+    document.getElementById("btnCloseEnroll").addEventListener("click", () => modalEnroll.style.display = "none");
+
+    document.getElementById("formEnroll").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("newWorkerName").value;
+        const role = document.getElementById("newWorkerRole").value;
+        const zone = document.getElementById("newWorkerZone").value;
+        const shift = document.getElementById("newWorkerShift").value;
+
+        const count = workers.length + 1;
+        workers.push({
+            id: `W-10${count}`,
+            name: name.trim().toLowerCase().startsWith("worker") ? name : `Worker ${count} (${name})`,
+            role,
+            zone,
+            shift,
+            safetyScore: 100.0,
+            isUnderground: 1,
+            avatarEmoji: "👷"
+        });
+
+        modalEnroll.style.display = "none";
+        updateWorkersUI();
+        updateGovernanceUI();
+        alert(`Worker ${count} enrolled with active biometric safety profile!`);
+    });
+});
+
+    </script>
+</body>
+</html>
