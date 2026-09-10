@@ -9,7 +9,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   
-  <!-- MediaPipe Face Mesh & Hands for Real-time AI Tracking -->
+  <!-- MediaPipe Face Mesh for Real-time AI Tracking -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 
@@ -39,7 +39,7 @@
       </div>
       <div>
         <h1 class="text-xl font-bold tracking-wide text-amber-400">COAL-GUARD AI</h1>
-        <p class="text-xs text-slate-400">Smart Mine Governance & Multi-Worker Compliance System | SIH Project</p>
+        <p class="text-xs text-slate-400">Smart Mine Governance & Compliance System | SIH Project</p>
       </div>
     </div>
     
@@ -48,46 +48,43 @@
         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
         LIVE MONITORING ACTIVE
       </div>
-      <button onclick="registerWorkerModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2 rounded-lg text-sm flex items-center gap-2 transition">
-        <i data-lucide="user-plus" class="w-4 h-4"></i> Register Worker
-      </button>
     </div>
   </header>
 
   <!-- Main Content Dashboard -->
   <main class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-[1920px] mx-auto w-full">
     
-    <!-- Left Column: Live AI Video Stream (2/3 width on desktop) -->
+    <!-- Left Column: Live AI Video Stream -->
     <div class="lg:col-span-2 space-y-6">
       <div class="glass rounded-xl overflow-hidden relative border border-slate-800 shadow-2xl">
         <div class="bg-slate-900/80 px-4 py-3 border-b border-slate-800 flex justify-between items-center">
           <div class="flex items-center gap-2 text-sm font-semibold text-slate-300">
             <i data-lucide="video" class="w-4 h-4 text-amber-500"></i>
-            Shaft 04 - Primary Pithead Camera (Live Stream)
+            Shaft 04 - Primary Pithead Camera (Live Feed)
           </div>
-          <span class="text-xs font-mono bg-slate-800 px-2 py-1 rounded text-slate-400">FPS: <span id="fpsCounter">30</span></span>
+          <span class="text-xs font-mono bg-slate-800 px-2 py-1 rounded text-slate-400">STATUS: <span class="text-emerald-400 font-bold">STREAMING</span></span>
         </div>
 
-        <!-- Live Camera & AI Overlay Canvas Container -->
+        <!-- Live Camera & Canvas -->
         <div class="relative aspect-video bg-black flex items-center justify-center overflow-hidden">
           <video id="webcam" class="absolute inset-0 w-full h-full object-cover hidden" playsinline></video>
           <canvas id="outputCanvas" class="absolute inset-0 w-full h-full object-cover z-10"></canvas>
 
-          <!-- Scanning Visual overlay -->
+          <!-- Scanning Visual Overlay -->
           <div class="absolute inset-0 scanline pointer-events-none z-20"></div>
 
-          <!-- Uninitialized / Fallback Loader -->
+          <!-- Loader -->
           <div id="loader" class="z-30 text-center space-y-3">
             <div class="inline-block animate-spin text-amber-500">
               <i data-lucide="loader-2" class="w-10 h-10"></i>
             </div>
-            <p class="text-sm text-slate-400">Accessing Live Camera & Initializing AI Detection Models...</p>
+            <p class="text-sm text-slate-400">Initializing Live Camera & Precision PPE Detection Engine...</p>
           </div>
         </div>
 
-        <!-- Quick AI Camera Controls -->
+        <!-- AI Controls -->
         <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex flex-wrap gap-4 justify-between items-center">
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-4">
             <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
               <input type="checkbox" id="toggleHelmet" checked class="accent-amber-500 rounded">
               Helmet Detection
@@ -97,8 +94,8 @@
               Vest (PPE) Detection
             </label>
             <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
-              <input type="checkbox" id="toggleFace" checked class="accent-amber-500 rounded">
-              Face Recognition
+              <input type="checkbox" id="toggleWorkerID" checked class="accent-amber-500 rounded">
+              Worker Identification
             </label>
           </div>
           <button onclick="toggleAudioAlerts()" id="audioBtn" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded flex items-center gap-2">
@@ -107,85 +104,81 @@
         </div>
       </div>
 
-      <!-- Real-time Mine Atmospheric & AQI Monitoring Panel -->
+      <!-- Real-Time Atmospheric Sensors -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <!-- AQI Card -->
         <div class="glass p-4 rounded-xl border border-slate-800">
           <div class="flex justify-between items-start text-slate-400 mb-2">
             <span class="text-xs font-semibold">MINE AQI (PM2.5)</span>
             <i data-lucide="wind" class="w-4 h-4 text-sky-400"></i>
           </div>
           <div class="text-2xl font-bold text-emerald-400" id="aqiVal">48</div>
-          <p class="text-[10px] text-slate-500 mt-1">Status: <span class="text-emerald-400 font-bold" id="aqiStatus">GOOD</span></p>
+          <p class="text-[10px] text-slate-500 mt-1">Status: <span class="text-emerald-400 font-bold" id="aqiStatus">NORMAL</span></p>
         </div>
 
-        <!-- Methane Gas Card -->
         <div class="glass p-4 rounded-xl border border-slate-800">
           <div class="flex justify-between items-start text-slate-400 mb-2">
             <span class="text-xs font-semibold">METHANE (CH4)</span>
             <i data-lucide="flame" class="w-4 h-4 text-amber-500"></i>
           </div>
           <div class="text-2xl font-bold text-slate-100" id="ch4Val">0.12%</div>
-          <p class="text-[10px] text-slate-500 mt-1">Threshold Limit: 1.00%</p>
+          <p class="text-[10px] text-slate-500 mt-1">Safety Limit: 1.00%</p>
         </div>
 
-        <!-- Carbon Monoxide Card -->
         <div class="glass p-4 rounded-xl border border-slate-800">
           <div class="flex justify-between items-start text-slate-400 mb-2">
             <span class="text-xs font-semibold">CARBON MONOXIDE</span>
             <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-500"></i>
           </div>
           <div class="text-2xl font-bold text-slate-100" id="coVal">12 PPM</div>
-          <p class="text-[10px] text-slate-500 mt-1">Threshold Limit: 50 PPM</p>
+          <p class="text-[10px] text-slate-500 mt-1">Safety Limit: 50 PPM</p>
         </div>
 
-        <!-- Shaft Ambient Temp Card -->
         <div class="glass p-4 rounded-xl border border-slate-800">
           <div class="flex justify-between items-start text-slate-400 mb-2">
             <span class="text-xs font-semibold">SHAFT TEMP</span>
             <i data-lucide="thermometer" class="w-4 h-4 text-amber-400"></i>
           </div>
           <div class="text-2xl font-bold text-slate-100" id="tempVal">28.4°C</div>
-          <p class="text-[10px] text-slate-500 mt-1">Normal Operational Range</p>
+          <p class="text-[10px] text-slate-500 mt-1">Operational Range</p>
         </div>
       </div>
     </div>
 
-    <!-- Right Column: Compliance Dashboard, Recognized Workers & Audit Log -->
+    <!-- Right Column: Workers & Violations Panel -->
     <div class="space-y-6">
       
       <!-- Currently Detected Workers Panel -->
       <div class="glass p-5 rounded-xl border border-slate-800">
         <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-          <i data-lucide="users" class="w-4 h-4"></i> Active Workers In View (<span id="workerCount">0</span>)
+          <i data-lucide="users" class="w-4 h-4"></i> Active Workers In Camera (<span id="workerCount">0</span>)
         </h3>
         <div id="activeWorkersList" class="space-y-3 max-h-48 overflow-y-auto pr-1">
           <p class="text-xs text-slate-500 italic">No workers currently detected in camera frame...</p>
         </div>
       </div>
 
-      <!-- Live Safety Violations & Governance Log -->
+      <!-- Governance Violations Log -->
       <div class="glass p-5 rounded-xl border border-slate-800 flex-1 flex flex-col">
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-sm font-bold text-rose-400 uppercase tracking-wider flex items-center gap-2">
-            <i data-lucide="shield-alert" class="w-4 h-4"></i> Live Audit & Violation Log
+            <i data-lucide="shield-alert" class="w-4 h-4"></i> Compliance & Audit Log
           </h3>
-          <button onclick="clearLogs()" class="text-[10px] text-slate-400 hover:text-slate-200 underline">Clear</button>
+          <button onclick="clearLogs()" class="text-[10px] text-slate-400 hover:text-slate-200 underline">Clear Log</button>
         </div>
         <div id="violationLogs" class="space-y-2 text-xs font-mono max-h-72 overflow-y-auto pr-1">
           <div class="p-2 rounded bg-slate-900/60 border border-slate-800 text-slate-400">
-            [SYS INIT] Governance Engine online. Monitoring Shaft 04.
+            [SYS INIT] Smart Governance Engine active. Shaft 04 camera running.
           </div>
         </div>
       </div>
 
-      <!-- Mine Safety Compliance Quick Stats -->
+      <!-- Quick Shift Summary -->
       <div class="glass p-5 rounded-xl border border-slate-800">
-        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Shift Compliance Summary</h3>
-        <div class="space-y-2">
+        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Live Compliance Metrics</h3>
+        <div class="space-y-3">
           <div>
             <div class="flex justify-between text-xs mb-1">
-              <span class="text-slate-300">Helmet Adherence</span>
+              <span class="text-slate-300">Helmet Safety Compliance</span>
               <span class="text-emerald-400 font-bold" id="helmetRate">100%</span>
             </div>
             <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
@@ -194,7 +187,7 @@
           </div>
           <div>
             <div class="flex justify-between text-xs mb-1">
-              <span class="text-slate-300">High-Vis Vest Adherence</span>
+              <span class="text-slate-300">Safety Vest Adherence</span>
               <span class="text-amber-400 font-bold" id="vestRate">100%</span>
             </div>
             <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
@@ -207,71 +200,26 @@
     </div>
   </main>
 
-  <!-- Modal for Registering Workers -->
-  <div id="registerModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="glass max-w-md w-full p-6 rounded-2xl border border-slate-700 space-y-4">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="text-lg font-bold text-amber-400 flex items-center gap-2">
-          <i data-lucide="user-check" class="w-5 h-5"></i> Register New Mine Worker
-        </h3>
-        <button onclick="closeWorkerModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-      <div class="space-y-3">
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Worker Identification / Name</label>
-          <input type="text" id="workerNameInput" placeholder="e.g. Worker 1 (Rajesh Kumar)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500">
-        </div>
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Assigned Mining Belt / Shaft</label>
-          <input type="text" id="workerShiftInput" value="Shaft 04 - Sector B" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500">
-        </div>
-        <p class="text-[11px] text-slate-400 bg-amber-500/10 border border-amber-500/20 p-2 rounded">
-          <i data-lucide="info" class="w-3.5 h-3.5 inline mr-1 text-amber-400"></i> The system will register the current face profile visible in the live webcam feed as this worker.
-        </p>
-      </div>
-      <div class="flex justify-end gap-3 pt-2">
-        <button onclick="closeWorkerModal()" class="px-4 py-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg">Cancel</button>
-        <button onclick="saveWorker()" class="px-4 py-2 text-xs bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg">Save & Enroll</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- JavaScript Logic & MediaPipe Integration -->
   <script>
-    // Initialize Lucide Icons
     lucide.createIcons();
 
-    // DOM Elements
     const videoElement = document.getElementById('webcam');
     const canvasElement = document.getElementById('outputCanvas');
     const canvasCtx = canvasElement.getContext('2d');
     const loader = document.getElementById('loader');
     
-    // Audio Alerts setup
     let audioEnabled = true;
     const alertSynth = window.speechSynthesis;
     let lastSpokenTime = 0;
 
-    // Registered Workers Database (In-Memory)
-    let registeredWorkers = [
-      { name: "Worker 1 (Suresh)", id: "W-102" }
-    ];
-
-    // Stats Counters
-    let totalDetections = 0;
-    let helmetCompliant = 0;
-    let vestCompliant = 0;
-
-    // Toggle Checkboxes
     const toggleHelmet = document.getElementById('toggleHelmet');
     const toggleVest = document.getElementById('toggleVest');
-    const toggleFace = document.getElementById('toggleFace');
+    const toggleWorkerID = document.getElementById('toggleWorkerID');
 
-    // Speech Alert Utility
     function speakAlert(text) {
       if (!audioEnabled || !alertSynth) return;
       const now = Date.now();
-      if (now - lastSpokenTime > 6000) { // Throttle alerts to once every 6s
+      if (now - lastSpokenTime > 6000) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.rate = 1.0;
         alertSynth.speak(utterance);
@@ -282,31 +230,12 @@
     function toggleAudioAlerts() {
       audioEnabled = !audioEnabled;
       const btn = document.getElementById('audioBtn');
-      if (audioEnabled) {
-        btn.innerHTML = `<i data-lucide="volume-2" class="w-4 h-4 text-emerald-400"></i> Audio Alerts: Enabled`;
-      } else {
-        btn.innerHTML = `<i data-lucide="volume-x" class="w-4 h-4 text-rose-400"></i> Audio Alerts: Disabled`;
-      }
+      btn.innerHTML = audioEnabled 
+        ? `<i data-lucide="volume-2" class="w-4 h-4 text-emerald-400"></i> Audio Alerts: Enabled`
+        : `<i data-lucide="volume-x" class="w-4 h-4 text-rose-400"></i> Audio Alerts: Disabled`;
       lucide.createIcons();
     }
 
-    // Modal Control
-    function registerWorkerModal() {
-      document.getElementById('registerModal').classList.remove('hidden');
-    }
-    function closeWorkerModal() {
-      document.getElementById('registerModal').classList.add('hidden');
-    }
-    function saveWorker() {
-      const name = document.getElementById('workerNameInput').value.trim();
-      if (name) {
-        registeredWorkers.push({ name: name, id: `W-${Math.floor(100 + Math.random() * 900)}` });
-        addLog(`[ENROLLMENT] Successfully registered ${name} into governance DB.`);
-        closeWorkerModal();
-      }
-    }
-
-    // Log Manager
     function addLog(msg, isViolation = false) {
       const logsContainer = document.getElementById('violationLogs');
       const time = new Date().toLocaleTimeString();
@@ -320,13 +249,34 @@
       document.getElementById('violationLogs').innerHTML = '';
     }
 
-    // Color Analysis Engine (Checks bounding area for Safety Yellow/Orange & Reflective Tones)
-    function analyzePPEColor(ctx, x, y, width, height, targetType) {
+    // Helper: Convert RGB to HSV for precise Helmet Color Detection
+    function rgbToHsv(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      let max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h, s, v = max;
+      let d = max - min;
+      s = max === 0 ? 0 : d / max;
+
+      if (max === min) {
+        h = 0;
+      } else {
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+      return [h * 360, s * 100, v * 100]; // Hue [0-360], Saturation [0-100], Value [0-100]
+    }
+
+    // Improved Multi-Tone Helmet Analysis
+    function analyzeHelmetColor(ctx, x, y, width, height) {
       if (width <= 0 || height <= 0) return false;
       try {
-        const imageData = ctx.getImageData(Math.max(0, x), Math.max(0, y), width, height);
+        const imageData = ctx.getImageData(Math.max(0, Math.floor(x)), Math.max(0, Math.floor(y)), Math.floor(width), Math.floor(height));
         const data = imageData.data;
-        let matchPixels = 0;
+        let helmetPixels = 0;
         const totalPixels = data.length / 4;
 
         for (let i = 0; i < data.length; i += 4) {
@@ -334,33 +284,69 @@
           const g = data[i+1];
           const b = data[i+2];
 
-          if (targetType === 'HELMET') {
-            // Checks for High-Visibility Helmet Yellow / Bright Red / Orange
-            const isYellow = (r > 150 && g > 130 && b < 100);
-            const isBrightRedOrange = (r > 180 && g < 100 && b < 80) || (r > 200 && g > 100 && b < 50);
-            if (isYellow || isBrightRedOrange) matchPixels++;
-          } else if (targetType === 'VEST') {
-            // Checks for High-Vis Neon Green / Neon Yellow / Safety Orange Vest
-            const isHighVisGreen = (r > 120 && g > 150 && b < 110);
-            const isOrangeVest = (r > 180 && g > 80 && b < 60);
-            if (isHighVisGreen || isOrangeVest) matchPixels++;
+          const [h, s, v] = rgbToHsv(r, g, b);
+
+          // 1. High-Vis Safety Yellow / Neon Green (Hue 40 - 80)
+          const isYellowHelmet = (h >= 40 && h <= 85) && (s > 35) && (v > 40);
+          
+          // 2. Safety Orange / Red Helmet (Hue 0-30 or 340-360)
+          const isOrangeRedHelmet = ((h >= 0 && h <= 30) || (h >= 340 && h <= 360)) && (s > 45) && (v > 40);
+
+          // 3. High-Vis Industrial White / Bright Silver Helmet
+          const isWhiteHelmet = (s < 18) && (v > 75) && (r > 170 && g > 170 && b > 170);
+
+          // 4. Industrial Safety Blue Hard Hat
+          const isBlueHelmet = (h >= 190 && h <= 240) && (s > 40) && (v > 35);
+
+          if (isYellowHelmet || isOrangeRedHelmet || isWhiteHelmet || isBlueHelmet) {
+            helmetPixels++;
           }
         }
         
-        // Return true if at least 12% of the region matches target safety color
-        return (matchPixels / totalPixels) > 0.12;
+        // At least 14% of upper ROI must match safety hard-hat tones
+        return (helmetPixels / totalPixels) > 0.14;
       } catch (e) {
         return false;
       }
     }
 
-    // MediaPipe FaceMesh Engine Setup
+    // High-Vis Vest Analysis
+    function analyzeVestColor(ctx, x, y, width, height) {
+      if (width <= 0 || height <= 0) return false;
+      try {
+        const imageData = ctx.getImageData(Math.max(0, Math.floor(x)), Math.max(0, Math.floor(y)), Math.floor(width), Math.floor(height));
+        const data = imageData.data;
+        let vestPixels = 0;
+        const totalPixels = data.length / 4;
+
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i+1];
+          const b = data[i+2];
+
+          const [h, s, v] = rgbToHsv(r, g, b);
+
+          // High-Vis Neon Green/Yellow or Orange Vests
+          const isNeonVest = (h >= 45 && h <= 100) && (s > 30) && (v > 35);
+          const isOrangeVest = ((h >= 5 && h <= 32)) && (s > 50) && (v > 40);
+
+          if (isNeonVest || isOrangeVest) {
+            vestPixels++;
+          }
+        }
+        return (vestPixels / totalPixels) > 0.12;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // Initialize MediaPipe FaceMesh Engine
     const faceMesh = new FaceMesh({
       locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
     });
 
     faceMesh.setOptions({
-      maxNumFaces: 4, // Multi-worker detection enabled
+      maxNumFaces: 6, // Tracks up to 6 workers concurrently
       refineLandmarks: true,
       minDetectionConfidence: 0.5,
       minTrackingConfidence: 0.5
@@ -368,16 +354,12 @@
 
     faceMesh.onResults(onResults);
 
-    // AI Frame Processing Loop
     function onResults(results) {
-      // Hide loader once feed starts
       loader.classList.add('hidden');
 
-      // Adjust Canvas size
       canvasElement.width = videoElement.videoWidth;
       canvasElement.height = videoElement.videoHeight;
 
-      // Draw original frame
       canvasCtx.save();
       canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
       canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
@@ -386,10 +368,16 @@
       activeWorkersList.innerHTML = '';
 
       if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
-        document.getElementById('workerCount').innerText = results.multiFaceLandmarks.length;
+        const totalWorkersCount = results.multiFaceLandmarks.length;
+        document.getElementById('workerCount').innerText = totalWorkersCount;
+
+        let compliantCount = 0;
 
         results.multiFaceLandmarks.forEach((landmarks, index) => {
-          // Bounding Box Calculation
+          // Dynamic Generic Naming: Worker 1, Worker 2, Worker 3...
+          const workerLabel = `Worker ${index + 1}`;
+
+          // Calculate Precise Bounding Box
           let minX = canvasElement.width, minY = canvasElement.height, maxX = 0, maxY = 0;
           landmarks.forEach(pt => {
             const x = pt.x * canvasElement.width;
@@ -403,32 +391,30 @@
           const faceWidth = maxX - minX;
           const faceHeight = maxY - minY;
 
-          // Define PPE Regions relative to detected face
-          // 1. Helmet Region (Area directly above head)
-          const helmetX = Math.max(0, minX - faceWidth * 0.2);
-          const helmetY = Math.max(0, minY - faceHeight * 0.8);
-          const helmetW = faceWidth * 1.4;
-          const helmetH = faceHeight * 0.7;
+          // REFINED ROI (Region of Interest) for Helmet
+          // Positions ROI clearly above the eyebrows and head crown to avoid forehead false positives
+          const helmetX = Math.max(0, minX - faceWidth * 0.25);
+          const helmetY = Math.max(0, minY - faceHeight * 1.15);
+          const helmetW = faceWidth * 1.5;
+          const helmetH = faceHeight * 1.0;
 
-          // 2. Vest Region (Area directly below face/chest)
-          const vestX = Math.max(0, minX - faceWidth * 0.5);
-          const vestY = maxY;
-          const vestW = faceWidth * 2.0;
-          const vestH = Math.min(canvasElement.height - maxY, faceHeight * 2.2);
+          // REFINED ROI for Vest (Torso)
+          const vestX = Math.max(0, minX - faceWidth * 0.6);
+          const vestY = maxY + 5;
+          const vestW = faceWidth * 2.2;
+          const vestH = Math.min(canvasElement.height - vestY, faceHeight * 2.4);
 
-          // Perform PPE Checks
-          const hasHelmet = toggleHelmet.checked ? analyzePPEColor(canvasCtx, helmetX, helmetY, helmetW, helmetH, 'HELMET') : true;
-          const hasVest = toggleVest.checked ? analyzePPEColor(canvasCtx, vestX, vestY, vestW, vestH, 'VEST') : true;
+          // Evaluate Helmet & Vest Safety Compliance
+          const hasHelmet = toggleHelmet.checked ? analyzeHelmetColor(canvasCtx, helmetX, helmetY, helmetW, helmetH) : true;
+          const hasVest = toggleVest.checked ? analyzeVestColor(canvasCtx, vestX, vestY, vestW, vestH) : true;
 
-          // Face Recognition ID (Maps worker 1, 2... based on detected face index or DB)
-          const workerName = registeredWorkers[index] ? registeredWorkers[index].name : `Worker ${index + 1}`;
+          if (hasHelmet && hasVest) compliantCount++;
 
-          // Draw Bounding Boxes & Annotations
           canvasCtx.lineWidth = 3;
 
-          // Draw Helmet Zone
+          // Draw Helmet Bounding Box
           if (toggleHelmet.checked) {
-            canvasCtx.strokeStyle = hasHelmet ? '#10B981' : '#EF4444'; // Green or Red
+            canvasCtx.strokeStyle = hasHelmet ? '#10B981' : '#EF4444';
             canvasCtx.strokeRect(helmetX, helmetY, helmetW, helmetH);
             canvasCtx.fillStyle = hasHelmet ? '#10B981' : '#EF4444';
             canvasCtx.fillRect(helmetX, helmetY - 20, 110, 20);
@@ -437,7 +423,7 @@
             canvasCtx.fillText(hasHelmet ? 'HELMET: OK' : 'NO HELMET!', helmetX + 5, helmetY - 5);
           }
 
-          // Draw Vest Zone
+          // Draw Vest Bounding Box
           if (toggleVest.checked && vestH > 10) {
             canvasCtx.strokeStyle = hasVest ? '#10B981' : '#EF4444';
             canvasCtx.strokeRect(vestX, vestY, vestW, vestH);
@@ -448,41 +434,46 @@
             canvasCtx.fillText(hasVest ? 'VEST: OK' : 'NO VEST!', vestX + 5, vestY + 14);
           }
 
-          // Draw Face Identification Box
-          if (toggleFace.checked) {
-            canvasCtx.strokeStyle = '#F59E0B'; // Amber
+          // Draw Worker Tag
+          if (toggleWorkerID.checked) {
+            canvasCtx.strokeStyle = '#F59E0B';
             canvasCtx.strokeRect(minX, minY, faceWidth, faceHeight);
             canvasCtx.fillStyle = '#F59E0B';
             canvasCtx.fillRect(minX, minY - 22, faceWidth, 22);
             canvasCtx.fillStyle = '#0f172a';
             canvasCtx.font = 'bold 12px sans-serif';
-            canvasCtx.fillText(workerName, minX + 5, minY - 6);
+            canvasCtx.fillText(workerLabel, minX + 5, minY - 6);
           }
 
-          // Populate Right Side Active Worker UI Card
+          // Render Worker Entry in Right Panel
           const card = document.createElement('div');
           card.className = "p-3 bg-slate-900/80 rounded-lg border border-slate-800 flex justify-between items-center";
           card.innerHTML = `
             <div>
-              <p class="text-xs font-bold text-amber-400">${workerName}</p>
+              <p class="text-xs font-bold text-amber-400">${workerLabel}</p>
               <div class="flex gap-2 mt-1 text-[10px]">
-                <span class="${hasHelmet ? 'text-emerald-400' : 'text-rose-400 font-bold'}">Helmet: ${hasHelmet ? 'YES' : 'MISSING'}</span> | 
-                <span class="${hasVest ? 'text-emerald-400' : 'text-rose-400 font-bold'}">Vest: ${hasVest ? 'YES' : 'MISSING'}</span>
+                <span class="${hasHelmet ? 'text-emerald-400' : 'text-rose-400 font-bold'}">Helmet: ${hasHelmet ? 'OK' : 'MISSING'}</span> | 
+                <span class="${hasVest ? 'text-emerald-400' : 'text-rose-400 font-bold'}">Vest: ${hasVest ? 'OK' : 'MISSING'}</span>
               </div>
             </div>
-            <span class="text-[10px] px-2 py-1 rounded ${hasHelmet && hasVest ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
-              ${hasHelmet && hasVest ? 'COMPLIANT' : 'VIOLATION'}
+            <span class="text-[10px] font-bold px-2 py-1 rounded ${hasHelmet && hasVest ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
+              ${hasHelmet && hasVest ? 'COMPLIANT' : 'NON-COMPLIANT'}
             </span>
           `;
           activeWorkersList.appendChild(card);
 
-          // Handle Safety Violation Alerts
+          // Log & Audio Trigger
           if (!hasHelmet || !hasVest) {
-            const violationMsg = `SAFETY VIOLATION: ${workerName} missing ${!hasHelmet ? 'Helmet ' : ''}${!hasVest ? 'Safety Vest' : ''}`;
+            const violationMsg = `SAFETY ALERT: ${workerLabel} missing ${!hasHelmet ? 'Safety Helmet ' : ''}${!hasVest ? 'High-Vis Vest' : ''}`;
             addLog(violationMsg, true);
-            speakAlert(`Warning! Safety violation detected for ${workerName}`);
+            speakAlert(`Attention! Safety violation detected for ${workerLabel}`);
           }
         });
+
+        // Update Compliance Progress Bars
+        const helmetPct = Math.round((compliantCount / totalWorkersCount) * 100);
+        document.getElementById('helmetRate').innerText = `${helmetPct}%`;
+        document.getElementById('helmetBar').style.width = `${helmetPct}%`;
 
       } else {
         document.getElementById('workerCount').innerText = '0';
@@ -492,7 +483,7 @@
       canvasCtx.restore();
     }
 
-    // Direct Live Webcam Initialization
+    // Camera Stream Initialization
     const camera = new Camera(videoElement, {
       onFrame: async () => {
         await faceMesh.send({ image: videoElement });
@@ -502,35 +493,28 @@
     });
 
     camera.start().catch(err => {
-      console.error("Camera access error:", err);
+      console.error("Webcam Error:", err);
       loader.innerHTML = `
         <div class="text-rose-500 space-y-2">
           <i data-lucide="camera-off" class="w-10 h-10 mx-auto"></i>
-          <p class="text-sm font-semibold">Camera Access Denied or Not Found</p>
-          <p class="text-xs text-slate-400">Please allow webcam permissions in your browser address bar to enable live monitoring.</p>
+          <p class="text-sm font-semibold">Webcam Stream Blocked or Missing</p>
+          <p class="text-xs text-slate-400">Please grant camera permissions in browser settings to activate live AI monitoring.</p>
         </div>
       `;
       lucide.createIcons();
     });
 
-    // Simulated Atmosphere & Sensor Telemetry Updates
+    // Environmental Gas & AQI Sensor Stream Simulation
     setInterval(() => {
-      // Small randomized fluctuations for coal mine environment sensors
-      const aqi = Math.floor(45 + Math.random() * 12);
-      const ch4 = (0.10 + Math.random() * 0.05).toFixed(2);
-      const co = Math.floor(10 + Math.random() * 5);
-      const temp = (28.0 + Math.random() * 0.8).toFixed(1);
+      const aqi = Math.floor(45 + Math.random() * 10);
+      const ch4 = (0.10 + Math.random() * 0.04).toFixed(2);
+      const co = Math.floor(10 + Math.random() * 4);
+      const temp = (28.2 + Math.random() * 0.6).toFixed(1);
 
       document.getElementById('aqiVal').innerText = aqi;
       document.getElementById('ch4Val').innerText = `${ch4}%`;
       document.getElementById('coVal').innerText = `${co} PPM`;
       document.getElementById('tempVal').innerText = `${temp}°C`;
-
-      // Trigger Hazardous AQI Alert if threshold exceeded
-      if (aqi > 100) {
-        addLog(`[ATMOSPHERE WARNING] High PM2.5 AQI level: ${aqi}`, true);
-        speakAlert("Warning. Hazardous air quality index detected in Shaft 04");
-      }
     }, 4000);
   </script>
 </body>
