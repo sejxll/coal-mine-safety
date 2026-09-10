@@ -139,7 +139,7 @@
   <!-- Main Grid Dashboard Layout -->
   <main class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-[1920px] mx-auto w-full z-10">
 
-    <!-- Left Main Column: Video Stream & Expanded Atmospheric Gas Matrix (8 Columns) -->
+    <!-- Left Main Column: Video Stream & Atmospheric Gas Matrix (8 Columns) -->
     <div class="lg:col-span-8 space-y-6">
 
       <!-- Camera Feed Box -->
@@ -506,7 +506,7 @@
       alert("⚠️ EMERGENCY SOS TRIGGERED: Mine Evacuation Signal Broadcasted.");
     }
 
-    // --- Image Analysis Engine ---
+    // --- Image Analysis Helpers ---
     function rgbToHsv(r, g, b) {
       r /= 255; g /= 255; b /= 255;
       let max = Math.max(r, g, b), min = Math.min(r, g, b);
@@ -527,33 +527,46 @@
       return [h * 360, s * 100, v * 100];
     }
 
+    // Improved Dynamic Threshold Precision Functions
     function analyzeHelmetPrecision(ctx, x, y, width, height) {
       if (width <= 0 || height <= 0) return false;
       try {
-        const imageData = ctx.getImageData(Math.max(0, Math.floor(x)), Math.max(0, Math.floor(y)), Math.floor(width), Math.floor(height));
+        const imageData = ctx.getImageData(
+          Math.max(0, Math.floor(x)), 
+          Math.max(0, Math.floor(y)), 
+          Math.floor(width), 
+          Math.floor(height)
+        );
         const data = imageData.data;
-        let hardHatPixels = 0;
-        let capLampSpotlightPixels = 0;
+        let highBrightnessPixels = 0;
+        let helmetColorPixels = 0;
         const totalPixels = data.length / 4;
 
         for (let i = 0; i < data.length; i += 4) {
           const r = data[i], g = data[i+1], b = data[i+2];
+          const max = Math.max(r, g, b);
+          const min = Math.min(r, g, b);
+          const brightness = (r + g + b) / 3;
+
+          // Cap lamp spotlight / glare detection
+          if (brightness > 220 && (max - min) < 30) {
+            highBrightnessPixels++;
+          }
+
+          // Dynamic HSV checking with relaxed constraints
           const [h, s, v] = rgbToHsv(r, g, b);
+          const isYellowOrange = (h >= 15 && h <= 85) && (s > 20) && (v > 20);
+          const isSafetyWhiteRed = (v > 50 && s < 25) || ((h <= 15 || h >= 340) && s > 30);
 
-          if (v > 85 && (r > 210 && g > 210 && b > 200)) capLampSpotlightPixels++;
-
-          const isYellow = (h >= 32 && h <= 88) && (s > 25) && (v > 30);
-          const isOrangeRed = ((h >= 0 && h <= 30) || (h >= 335 && h <= 360)) && (s > 35) && (v > 30);
-          const isWhiteOrMetallic = (s < 22) && (v > 60) && (r > 140 && g > 140 && b > 140);
-          const isBlue = (h >= 180 && h <= 245) && (s > 28) && (v > 25);
-
-          if (isYellow || isOrangeRed || isWhiteOrMetallic || isBlue) hardHatPixels++;
+          if (isYellowOrange || isSafetyWhiteRed) {
+            helmetColorPixels++;
+          }
         }
 
-        const shellRatio = hardHatPixels / totalPixels;
-        const lampRatio = capLampSpotlightPixels / totalPixels;
+        const helmetRatio = helmetColorPixels / totalPixels;
+        const lampRatio = highBrightnessPixels / totalPixels;
 
-        return (shellRatio > 0.08) || (lampRatio > 0.02);
+        return (helmetRatio > 0.15) || (lampRatio > 0.015);
       } catch (e) {
         return false;
       }
@@ -562,28 +575,34 @@
     function analyzeVestPrecision(ctx, x, y, width, height) {
       if (width <= 0 || height <= 0) return false;
       try {
-        const imageData = ctx.getImageData(Math.max(0, Math.floor(x)), Math.max(0, Math.floor(y)), Math.floor(width), Math.floor(height));
+        const imageData = ctx.getImageData(
+          Math.max(0, Math.floor(x)), 
+          Math.max(0, Math.floor(y)), 
+          Math.floor(width), 
+          Math.floor(height)
+        );
         const data = imageData.data;
-        let neonBasePixels = 0;
-        let silverReflectiveStripPixels = 0;
+        let neonPixels = 0;
+        let reflectiveTapePixels = 0;
         const totalPixels = data.length / 4;
 
         for (let i = 0; i < data.length; i += 4) {
           const r = data[i], g = data[i+1], b = data[i+2];
           const [h, s, v] = rgbToHsv(r, g, b);
 
-          const isNeonGreenYellow = (h >= 45 && h <= 100) && (s > 25) && (v > 28);
-          const isSafetyOrange = (h >= 5 && h <= 35) && (s > 38) && (v > 30);
+          // High-vis yellow/green/orange vest fabric
+          const isNeon = (h >= 10 && h <= 95) && (s > 30) && (v > 25);
+          if (isNeon) neonPixels++;
 
-          if (isNeonGreenYellow || isSafetyOrange) neonBasePixels++;
-
-          if (s < 18 && v > 75 && (r > 170 && g > 170 && b > 170)) silverReflectiveStripPixels++;
+          // Reflective stripe (High intensity, low color saturation)
+          const isReflective = (v > 80) && (s < 20) && (r > 180 && g > 180 && b > 180);
+          if (isReflective) reflectiveTapePixels++;
         }
 
-        const neonRatio = neonBasePixels / totalPixels;
-        const stripRatio = silverReflectiveStripPixels / totalPixels;
+        const neonRatio = neonPixels / totalPixels;
+        const stripeRatio = reflectiveTapePixels / totalPixels;
 
-        return (neonRatio > 0.06) || (stripRatio > 0.035);
+        return (neonRatio > 0.12) || (stripeRatio > 0.04);
       } catch (e) {
         return false;
       }
