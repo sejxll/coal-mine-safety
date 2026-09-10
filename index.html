@@ -3,195 +3,279 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Smart Coal Mine Governance & Compliance System</title>
+  <title>AI-Based Smart Coal Mine Governance & Compliance System</title>
   
   <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   
-  <!-- MediaPipe Face Mesh for Real-time AI Tracking -->
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- MediaPipe Face Mesh & Camera Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 
   <style>
-    .glass {
-      background: rgba(15, 23, 42, 0.85);
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Modern Soft-Dark / Glassmorphism Aesthetic */
+    body {
+      background: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+      color: #f1f5f9;
+      overflow-x: hidden;
+    }
+
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .glass-card-light {
+      background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .scanline {
-      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(34,197,94,0.15), rgba(255,255,255,0));
-      animation: scan 3s linear infinite;
+
+    /* Anti-Gravity Mouse Glow Background Canvas */
+    #cursorCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
     }
-    @keyframes scan {
-      0% { top: 0%; }
-      100% { top: 100%; }
+
+    /* High-Tech Pulse Effects */
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.05); }
+    }
+    .glow-effect {
+      animation: pulseGlow 4s ease-in-out infinite;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.3);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(245, 158, 11, 0.6);
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col relative selection:bg-amber-500 selection:text-slate-900">
 
-  <!-- Header Section -->
-  <header class="border-b border-slate-800 glass sticky top-0 z-50 px-6 py-4 flex flex-wrap justify-between items-center gap-4">
+  <!-- Interactive Anti-Gravity Cursor Effect Canvas -->
+  <canvas id="cursorCanvas"></canvas>
+
+  <!-- Navigation Bar -->
+  <header class="sticky top-0 z-50 glass-card border-b border-slate-700/50 px-6 py-4 flex flex-wrap justify-between items-center gap-4">
     <div class="flex items-center space-x-3">
-      <div class="p-2 bg-amber-500/20 text-amber-500 rounded-lg border border-amber-500/30">
+      <div class="p-2.5 bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 rounded-xl shadow-lg shadow-amber-500/20 font-bold">
         <i data-lucide="hard-hat" class="w-7 h-7"></i>
       </div>
       <div>
-        <h1 class="text-xl font-bold tracking-wide text-amber-400">COAL-GUARD AI</h1>
-        <p class="text-xs text-slate-400">Smart Mine Governance & Compliance System | SIH Project</p>
+        <div class="flex items-center gap-2">
+          <h1 class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-amber-400 via-amber-200 to-white bg-clip-text text-transparent">COAL-GUARD AI</h1>
+          <span class="text-[10px] font-mono bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-500/30">SIH EDITION</span>
+        </div>
+        <p class="text-xs text-slate-400">Smart Mine Governance, Safety Compliance & Live Environmental Telemetry</p>
       </div>
     </div>
     
     <div class="flex items-center gap-4">
-      <div id="systemStatus" class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-full text-xs text-emerald-400">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-        LIVE MONITORING ACTIVE
+      <div class="flex items-center gap-2 bg-slate-800/80 border border-slate-700/80 px-3 py-1.5 rounded-full text-xs text-emerald-400 font-medium">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        AI SHAFT MONITORING ONLINE
       </div>
+      <button onclick="toggleAudioAlerts()" id="audioBtn" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-xl border border-slate-700 flex items-center gap-2 transition-all shadow-md hover:shadow-amber-500/10">
+        <i data-lucide="volume-2" class="w-4 h-4 text-emerald-400"></i> Audio Alerts: Enabled
+      </button>
     </div>
   </header>
 
-  <!-- Main Content Dashboard -->
-  <main class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-[1920px] mx-auto w-full">
+  <!-- Main Body Grid Layout -->
+  <main class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-[1920px] mx-auto w-full z-10">
     
-    <!-- Left Column: Live AI Video Stream -->
-    <div class="lg:col-span-2 space-y-6">
-      <div class="glass rounded-xl overflow-hidden relative border border-slate-800 shadow-2xl">
-        <div class="bg-slate-900/80 px-4 py-3 border-b border-slate-800 flex justify-between items-center">
-          <div class="flex items-center gap-2 text-sm font-semibold text-slate-300">
-            <i data-lucide="video" class="w-4 h-4 text-amber-500"></i>
-            Shaft 04 - Primary Pithead Camera (Live Feed)
+    <!-- Left Section: Video Feed & AQI Analytics (8 Columns) -->
+    <div class="lg:col-span-8 space-y-6">
+      
+      <!-- Live Video Monitor Panel -->
+      <div class="glass-card rounded-2xl overflow-hidden border border-slate-700/60 shadow-2xl relative">
+        <div class="bg-slate-900/90 px-5 py-3.5 border-b border-slate-800 flex justify-between items-center">
+          <div class="flex items-center gap-2.5 text-sm font-semibold text-slate-200">
+            <span class="relative flex h-2.5 w-2.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
+            </span>
+            Shaft 04 - Primary Pithead Camera Feed
           </div>
-          <span class="text-xs font-mono bg-slate-800 px-2 py-1 rounded text-slate-400">STATUS: <span class="text-emerald-400 font-bold">STREAMING</span></span>
+          <div class="flex items-center gap-3 text-xs text-slate-400 font-mono">
+            <span>RES: 1280x720</span>
+            <span class="bg-slate-800 px-2 py-0.5 rounded text-amber-400 font-semibold border border-slate-700">FPS: 30</span>
+          </div>
         </div>
 
-        <!-- Live Camera & Canvas -->
-        <div class="relative aspect-video bg-black flex items-center justify-center overflow-hidden">
+        <!-- Video Stream Box -->
+        <div class="relative aspect-video bg-slate-950 flex items-center justify-center overflow-hidden">
           <video id="webcam" class="absolute inset-0 w-full h-full object-cover hidden" playsinline></video>
           <canvas id="outputCanvas" class="absolute inset-0 w-full h-full object-cover z-10"></canvas>
 
-          <!-- Scanning Visual Overlay -->
-          <div class="absolute inset-0 scanline pointer-events-none z-20"></div>
-
-          <!-- Loader -->
+          <!-- System Loader -->
           <div id="loader" class="z-30 text-center space-y-3">
-            <div class="inline-block animate-spin text-amber-500">
-              <i data-lucide="loader-2" class="w-10 h-10"></i>
+            <div class="inline-block animate-spin text-amber-400">
+              <i data-lucide="loader-2" class="w-12 h-12"></i>
             </div>
-            <p class="text-sm text-slate-400">Initializing Live Camera & Precision PPE Detection Engine...</p>
+            <p class="text-sm font-medium text-slate-300">Accessing Camera Feed & Loading Neural Inspection Engine...</p>
           </div>
         </div>
 
-        <!-- AI Controls -->
-        <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex flex-wrap gap-4 justify-between items-center">
-          <div class="flex items-center gap-4">
-            <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
-              <input type="checkbox" id="toggleHelmet" checked class="accent-amber-500 rounded">
-              Helmet Detection
+        <!-- Camera Detection Controls -->
+        <div class="p-4 bg-slate-900/80 border-t border-slate-800 flex flex-wrap gap-6 justify-between items-center">
+          <div class="flex items-center gap-5">
+            <label class="flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer hover:text-amber-400 transition">
+              <input type="checkbox" id="toggleHelmet" checked class="w-4 h-4 accent-amber-500 rounded cursor-pointer">
+              Helmet Inspection
             </label>
-            <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
-              <input type="checkbox" id="toggleVest" checked class="accent-amber-500 rounded">
-              Vest (PPE) Detection
+            <label class="flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer hover:text-amber-400 transition">
+              <input type="checkbox" id="toggleVest" checked class="w-4 h-4 accent-amber-500 rounded cursor-pointer">
+              High-Vis Vest Check
             </label>
-            <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
-              <input type="checkbox" id="toggleWorkerID" checked class="accent-amber-500 rounded">
-              Worker Identification
+            <label class="flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer hover:text-amber-400 transition">
+              <input type="checkbox" id="toggleWorkerID" checked class="w-4 h-4 accent-amber-500 rounded cursor-pointer">
+              Worker Auto-Index
             </label>
           </div>
-          <button onclick="toggleAudioAlerts()" id="audioBtn" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded flex items-center gap-2">
-            <i data-lucide="volume-2" class="w-4 h-4 text-emerald-400"></i> Audio Alerts: Enabled
-          </button>
+          <span class="text-xs text-slate-400 font-mono">Algorithm: <span class="text-emerald-400 font-semibold">FaceMesh + HSV Spectrum HSV-v2</span></span>
         </div>
       </div>
 
-      <!-- Real-Time Atmospheric Sensors -->
+      <!-- Real-Time Atmospheric Gas & AQI Sensors Dashboard -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="glass p-4 rounded-xl border border-slate-800">
+        
+        <!-- AQI Card -->
+        <div class="glass-card p-4 rounded-xl border border-slate-700/60 hover:border-sky-500/50 transition-all group">
           <div class="flex justify-between items-start text-slate-400 mb-2">
-            <span class="text-xs font-semibold">MINE AQI (PM2.5)</span>
-            <i data-lucide="wind" class="w-4 h-4 text-sky-400"></i>
+            <span class="text-xs font-semibold uppercase tracking-wider">Coal Mine AQI</span>
+            <div class="p-1.5 bg-sky-500/10 text-sky-400 rounded-lg group-hover:scale-110 transition-transform">
+              <i data-lucide="wind" class="w-4 h-4"></i>
+            </div>
           </div>
-          <div class="text-2xl font-bold text-emerald-400" id="aqiVal">48</div>
-          <p class="text-[10px] text-slate-500 mt-1">Status: <span class="text-emerald-400 font-bold" id="aqiStatus">NORMAL</span></p>
+          <div class="text-3xl font-extrabold text-sky-400 font-mono" id="aqiVal">48</div>
+          <p class="text-[11px] text-slate-400 mt-1">Status: <span class="text-emerald-400 font-bold" id="aqiStatus">NORMAL</span></p>
         </div>
 
-        <div class="glass p-4 rounded-xl border border-slate-800">
+        <!-- Methane Card -->
+        <div class="glass-card p-4 rounded-xl border border-slate-700/60 hover:border-amber-500/50 transition-all group">
           <div class="flex justify-between items-start text-slate-400 mb-2">
-            <span class="text-xs font-semibold">METHANE (CH4)</span>
-            <i data-lucide="flame" class="w-4 h-4 text-amber-500"></i>
+            <span class="text-xs font-semibold uppercase tracking-wider">Methane (CH₄)</span>
+            <div class="p-1.5 bg-amber-500/10 text-amber-400 rounded-lg group-hover:scale-110 transition-transform">
+              <i data-lucide="flame" class="w-4 h-4"></i>
+            </div>
           </div>
-          <div class="text-2xl font-bold text-slate-100" id="ch4Val">0.12%</div>
-          <p class="text-[10px] text-slate-500 mt-1">Safety Limit: 1.00%</p>
+          <div class="text-3xl font-extrabold text-amber-400 font-mono" id="ch4Val">0.12%</div>
+          <p class="text-[11px] text-slate-400 mt-1">Safety Limit: 1.00%</p>
         </div>
 
-        <div class="glass p-4 rounded-xl border border-slate-800">
+        <!-- Carbon Monoxide Card -->
+        <div class="glass-card p-4 rounded-xl border border-slate-700/60 hover:border-rose-500/50 transition-all group">
           <div class="flex justify-between items-start text-slate-400 mb-2">
-            <span class="text-xs font-semibold">CARBON MONOXIDE</span>
-            <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-500"></i>
+            <span class="text-xs font-semibold uppercase tracking-wider">Carbon Monoxide</span>
+            <div class="p-1.5 bg-rose-500/10 text-rose-400 rounded-lg group-hover:scale-110 transition-transform">
+              <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+            </div>
           </div>
-          <div class="text-2xl font-bold text-slate-100" id="coVal">12 PPM</div>
-          <p class="text-[10px] text-slate-500 mt-1">Safety Limit: 50 PPM</p>
+          <div class="text-3xl font-extrabold text-slate-200 font-mono" id="coVal">12 PPM</div>
+          <p class="text-[11px] text-slate-400 mt-1">Safety Limit: 50 PPM</p>
         </div>
 
-        <div class="glass p-4 rounded-xl border border-slate-800">
+        <!-- Temperature Card -->
+        <div class="glass-card p-4 rounded-xl border border-slate-700/60 hover:border-emerald-500/50 transition-all group">
           <div class="flex justify-between items-start text-slate-400 mb-2">
-            <span class="text-xs font-semibold">SHAFT TEMP</span>
-            <i data-lucide="thermometer" class="w-4 h-4 text-amber-400"></i>
+            <span class="text-xs font-semibold uppercase tracking-wider">Ambient Temp</span>
+            <div class="p-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg group-hover:scale-110 transition-transform">
+              <i data-lucide="thermometer" class="w-4 h-4"></i>
+            </div>
           </div>
-          <div class="text-2xl font-bold text-slate-100" id="tempVal">28.4°C</div>
-          <p class="text-[10px] text-slate-500 mt-1">Operational Range</p>
+          <div class="text-3xl font-extrabold text-slate-200 font-mono" id="tempVal">28.4°C</div>
+          <p class="text-[11px] text-slate-400 mt-1">Normal Range</p>
         </div>
+
       </div>
+
     </div>
 
-    <!-- Right Column: Workers & Violations Panel -->
-    <div class="space-y-6">
+    <!-- Right Section: Live Workers, Audit Logs & Metrics (4 Columns) -->
+    <div class="lg:col-span-4 space-y-6">
       
-      <!-- Currently Detected Workers Panel -->
-      <div class="glass p-5 rounded-xl border border-slate-800">
-        <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-          <i data-lucide="users" class="w-4 h-4"></i> Active Workers In Camera (<span id="workerCount">0</span>)
-        </h3>
-        <div id="activeWorkersList" class="space-y-3 max-h-48 overflow-y-auto pr-1">
-          <p class="text-xs text-slate-500 italic">No workers currently detected in camera frame...</p>
+      <!-- Detected Workers List -->
+      <div class="glass-card p-5 rounded-2xl border border-slate-700/60 shadow-xl">
+        <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
+          <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+            <i data-lucide="users" class="w-4 h-4"></i> Visible Workers (<span id="workerCount" class="text-white">0</span>)
+          </h3>
+          <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">MULTI-FACE MODE</span>
+        </div>
+        <div id="activeWorkersList" class="space-y-3 max-h-52 overflow-y-auto pr-1">
+          <p class="text-xs text-slate-400 italic">No workers detected in camera field...</p>
         </div>
       </div>
 
-      <!-- Governance Violations Log -->
-      <div class="glass p-5 rounded-xl border border-slate-800 flex-1 flex flex-col">
-        <div class="flex justify-between items-center mb-4">
+      <!-- Real-Time Safety Violation Audit Logs -->
+      <div class="glass-card p-5 rounded-2xl border border-slate-700/60 shadow-xl flex flex-col">
+        <div class="flex justify-between items-center mb-3 border-b border-slate-800 pb-3">
           <h3 class="text-sm font-bold text-rose-400 uppercase tracking-wider flex items-center gap-2">
             <i data-lucide="shield-alert" class="w-4 h-4"></i> Compliance & Audit Log
           </h3>
-          <button onclick="clearLogs()" class="text-[10px] text-slate-400 hover:text-slate-200 underline">Clear Log</button>
+          <button onclick="clearLogs()" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded border border-slate-700 transition">Clear Log</button>
         </div>
-        <div id="violationLogs" class="space-y-2 text-xs font-mono max-h-72 overflow-y-auto pr-1">
-          <div class="p-2 rounded bg-slate-900/60 border border-slate-800 text-slate-400">
-            [SYS INIT] Smart Governance Engine active. Shaft 04 camera running.
+        <div id="violationLogs" class="space-y-2 text-xs font-mono max-h-64 overflow-y-auto pr-1">
+          <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-400">
+            [SYSTEM ONLINE] Coal Mine Governance AI Engine initialized. Stream active.
           </div>
         </div>
       </div>
 
-      <!-- Quick Shift Summary -->
-      <div class="glass p-5 rounded-xl border border-slate-800">
-        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Live Compliance Metrics</h3>
-        <div class="space-y-3">
+      <!-- Compliance Metrics -->
+      <div class="glass-card p-5 rounded-2xl border border-slate-700/60 shadow-xl">
+        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-4">Shift Adherence Rate</h3>
+        <div class="space-y-4">
           <div>
-            <div class="flex justify-between text-xs mb-1">
-              <span class="text-slate-300">Helmet Safety Compliance</span>
-              <span class="text-emerald-400 font-bold" id="helmetRate">100%</span>
+            <div class="flex justify-between text-xs font-semibold mb-1.5">
+              <span class="text-slate-300">Safety Helmet Adherence</span>
+              <span class="text-emerald-400 font-mono" id="helmetRate">100%</span>
             </div>
-            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-              <div id="helmetBar" class="bg-emerald-500 h-full transition-all duration-500" style="width: 100%"></div>
+            <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-700">
+              <div id="helmetBar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500" style="width: 100%"></div>
             </div>
           </div>
           <div>
-            <div class="flex justify-between text-xs mb-1">
-              <span class="text-slate-300">Safety Vest Adherence</span>
-              <span class="text-amber-400 font-bold" id="vestRate">100%</span>
+            <div class="flex justify-between text-xs font-semibold mb-1.5">
+              <span class="text-slate-300">High-Vis Vest Adherence</span>
+              <span class="text-amber-400 font-mono" id="vestRate">100%</span>
             </div>
-            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-              <div id="vestBar" class="bg-amber-500 h-full transition-all duration-500" style="width: 100%"></div>
+            <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-700">
+              <div id="vestBar" class="bg-gradient-to-r from-amber-500 to-yellow-300 h-full rounded-full transition-all duration-500" style="width: 100%"></div>
             </div>
           </div>
         </div>
@@ -201,21 +285,76 @@
   </main>
 
   <script>
+    // Initialize Icons
     lucide.createIcons();
 
+    // DOM Elements
     const videoElement = document.getElementById('webcam');
     const canvasElement = document.getElementById('outputCanvas');
     const canvasCtx = canvasElement.getContext('2d');
     const loader = document.getElementById('loader');
-    
-    let audioEnabled = true;
-    const alertSynth = window.speechSynthesis;
-    let lastSpokenTime = 0;
 
+    // Controls & State
     const toggleHelmet = document.getElementById('toggleHelmet');
     const toggleVest = document.getElementById('toggleVest');
     const toggleWorkerID = document.getElementById('toggleWorkerID');
 
+    let audioEnabled = true;
+    const alertSynth = window.speechSynthesis;
+    let lastSpokenTime = 0;
+
+    // --- 1. Interactive Anti-Gravity Cursor Glow Effect ---
+    const cursorCanvas = document.getElementById('cursorCanvas');
+    const cursorCtx = cursorCanvas.getContext('2d');
+    let particles = [];
+
+    function resizeCursorCanvas() {
+      cursorCanvas.width = window.innerWidth;
+      cursorCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCursorCanvas);
+    resizeCursorCanvas();
+
+    window.addEventListener('mousemove', (e) => {
+      for (let i = 0; i < 3; i++) {
+        particles.push({
+          x: e.clientX,
+          y: e.clientY,
+          vx: (Math.random() - 0.5) * 1.5,
+          vy: (Math.random() - 0.5) * 1.5 - 0.5, // Subtle upward floating
+          size: Math.random() * 6 + 2,
+          color: Math.random() > 0.5 ? 'rgba(245, 158, 11, ' : 'rgba(56, 189, 248, ', // Amber or Sky Blue glow
+          alpha: 0.8,
+          life: 0.02
+        });
+      }
+    });
+
+    function renderAntiGravityCursor() {
+      cursorCtx.clearRect(0, 0, cursorCanvas.width, cursorCanvas.height);
+      
+      for (let i = particles.length - 1; i >= 0; i--) {
+        let p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= p.life;
+
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+        } else {
+          cursorCtx.beginPath();
+          cursorCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          cursorCtx.fillStyle = p.color + p.alpha + ')';
+          cursorCtx.shadowBlur = 12;
+          cursorCtx.shadowColor = p.color + '0.8)';
+          cursorCtx.fill();
+        }
+      }
+      requestAnimationFrame(renderAntiGravityCursor);
+    }
+    renderAntiGravityCursor();
+
+    // --- 2. Voice Alert Engine ---
     function speakAlert(text) {
       if (!audioEnabled || !alertSynth) return;
       const now = Date.now();
@@ -240,8 +379,8 @@
       const logsContainer = document.getElementById('violationLogs');
       const time = new Date().toLocaleTimeString();
       const logEntry = document.createElement('div');
-      logEntry.className = `p-2 rounded border ${isViolation ? 'bg-rose-950/40 border-rose-800/60 text-rose-300' : 'bg-slate-900/60 border-slate-800 text-slate-300'}`;
-      logEntry.innerHTML = `<span class="opacity-60 text-[10px]">[${time}]</span> ${msg}`;
+      logEntry.className = `p-2.5 rounded-lg border transition-all ${isViolation ? 'bg-rose-950/40 border-rose-800/60 text-rose-300' : 'bg-slate-900/80 border-slate-800 text-slate-300'}`;
+      logEntry.innerHTML = `<span class="opacity-60 text-[10px] font-mono mr-1">[${time}]</span> ${msg}`;
       logsContainer.prepend(logEntry);
     }
 
@@ -249,7 +388,7 @@
       document.getElementById('violationLogs').innerHTML = '';
     }
 
-    // Helper: Convert RGB to HSV for precise Helmet Color Detection
+    // --- 3. Advanced HSV Color Space Conversion & PPE Detection ---
     function rgbToHsv(r, g, b) {
       r /= 255; g /= 255; b /= 255;
       let max = Math.max(r, g, b), min = Math.min(r, g, b);
@@ -267,10 +406,9 @@
         }
         h /= 6;
       }
-      return [h * 360, s * 100, v * 100]; // Hue [0-360], Saturation [0-100], Value [0-100]
+      return [h * 360, s * 100, v * 100];
     }
 
-    // Improved Multi-Tone Helmet Analysis
     function analyzeHelmetColor(ctx, x, y, width, height) {
       if (width <= 0 || height <= 0) return false;
       try {
@@ -280,37 +418,24 @@
         const totalPixels = data.length / 4;
 
         for (let i = 0; i < data.length; i += 4) {
-          const r = data[i];
-          const g = data[i+1];
-          const b = data[i+2];
-
+          const r = data[i], g = data[i+1], b = data[i+2];
           const [h, s, v] = rgbToHsv(r, g, b);
 
-          // 1. High-Vis Safety Yellow / Neon Green (Hue 40 - 80)
-          const isYellowHelmet = (h >= 40 && h <= 85) && (s > 35) && (v > 40);
-          
-          // 2. Safety Orange / Red Helmet (Hue 0-30 or 340-360)
-          const isOrangeRedHelmet = ((h >= 0 && h <= 30) || (h >= 340 && h <= 360)) && (s > 45) && (v > 40);
+          // Checks High-Vis Safety Colors: Yellow, Red/Orange, Industrial White & Blue
+          const isYellow = (h >= 38 && h <= 85) && (s > 30) && (v > 35);
+          const isOrangeRed = ((h >= 0 && h <= 28) || (h >= 340 && h <= 360)) && (s > 40) && (v > 35);
+          const isWhiteHardHat = (s < 20) && (v > 75) && (r > 160 && g > 160 && b > 160);
+          const isBlueHardHat = (h >= 185 && h <= 240) && (s > 35) && (v > 30);
 
-          // 3. High-Vis Industrial White / Bright Silver Helmet
-          const isWhiteHelmet = (s < 18) && (v > 75) && (r > 170 && g > 170 && b > 170);
-
-          // 4. Industrial Safety Blue Hard Hat
-          const isBlueHelmet = (h >= 190 && h <= 240) && (s > 40) && (v > 35);
-
-          if (isYellowHelmet || isOrangeRedHelmet || isWhiteHelmet || isBlueHelmet) {
-            helmetPixels++;
-          }
+          if (isYellow || isOrangeRed || isWhiteHardHat || isBlueHardHat) helmetPixels++;
         }
-        
-        // At least 14% of upper ROI must match safety hard-hat tones
-        return (helmetPixels / totalPixels) > 0.14;
+
+        return (helmetPixels / totalPixels) > 0.12;
       } catch (e) {
         return false;
       }
     }
 
-    // High-Vis Vest Analysis
     function analyzeVestColor(ctx, x, y, width, height) {
       if (width <= 0 || height <= 0) return false;
       try {
@@ -320,33 +445,28 @@
         const totalPixels = data.length / 4;
 
         for (let i = 0; i < data.length; i += 4) {
-          const r = data[i];
-          const g = data[i+1];
-          const b = data[i+2];
-
+          const r = data[i], g = data[i+1], b = data[i+2];
           const [h, s, v] = rgbToHsv(r, g, b);
 
-          // High-Vis Neon Green/Yellow or Orange Vests
-          const isNeonVest = (h >= 45 && h <= 100) && (s > 30) && (v > 35);
-          const isOrangeVest = ((h >= 5 && h <= 32)) && (s > 50) && (v > 40);
+          const isNeonGreenYellow = (h >= 45 && h <= 100) && (s > 28) && (v > 30);
+          const isOrangeVest = (h >= 5 && h <= 32) && (s > 45) && (v > 35);
 
-          if (isNeonVest || isOrangeVest) {
-            vestPixels++;
-          }
+          if (isNeonGreenYellow || isOrangeVest) vestPixels++;
         }
-        return (vestPixels / totalPixels) > 0.12;
+
+        return (vestPixels / totalPixels) > 0.10;
       } catch (e) {
         return false;
       }
     }
 
-    // Initialize MediaPipe FaceMesh Engine
+    // --- 4. MediaPipe AI Tracking Loop ---
     const faceMesh = new FaceMesh({
       locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
     });
 
     faceMesh.setOptions({
-      maxNumFaces: 6, // Tracks up to 6 workers concurrently
+      maxNumFaces: 6,
       refineLandmarks: true,
       minDetectionConfidence: 0.5,
       minTrackingConfidence: 0.5
@@ -368,16 +488,14 @@
       activeWorkersList.innerHTML = '';
 
       if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
-        const totalWorkersCount = results.multiFaceLandmarks.length;
-        document.getElementById('workerCount').innerText = totalWorkersCount;
+        const totalWorkers = results.multiFaceLandmarks.length;
+        document.getElementById('workerCount').innerText = totalWorkers;
 
         let compliantCount = 0;
 
         results.multiFaceLandmarks.forEach((landmarks, index) => {
-          // Dynamic Generic Naming: Worker 1, Worker 2, Worker 3...
           const workerLabel = `Worker ${index + 1}`;
 
-          // Calculate Precise Bounding Box
           let minX = canvasElement.width, minY = canvasElement.height, maxX = 0, maxY = 0;
           landmarks.forEach(pt => {
             const x = pt.x * canvasElement.width;
@@ -388,23 +506,20 @@
             if (y > maxY) maxY = y;
           });
 
-          const faceWidth = maxX - minX;
-          const faceHeight = maxY - minY;
+          const faceW = maxX - minX;
+          const faceH = maxY - minY;
 
-          // REFINED ROI (Region of Interest) for Helmet
-          // Positions ROI clearly above the eyebrows and head crown to avoid forehead false positives
-          const helmetX = Math.max(0, minX - faceWidth * 0.25);
-          const helmetY = Math.max(0, minY - faceHeight * 1.15);
-          const helmetW = faceWidth * 1.5;
-          const helmetH = faceHeight * 1.0;
+          // Scaled Regions
+          const helmetX = Math.max(0, minX - faceW * 0.25);
+          const helmetY = Math.max(0, minY - faceH * 1.15);
+          const helmetW = faceW * 1.5;
+          const helmetH = faceH * 0.95;
 
-          // REFINED ROI for Vest (Torso)
-          const vestX = Math.max(0, minX - faceWidth * 0.6);
+          const vestX = Math.max(0, minX - faceW * 0.5);
           const vestY = maxY + 5;
-          const vestW = faceWidth * 2.2;
-          const vestH = Math.min(canvasElement.height - vestY, faceHeight * 2.4);
+          const vestW = faceW * 2.0;
+          const vestH = Math.min(canvasElement.height - vestY, faceH * 2.2);
 
-          // Evaluate Helmet & Vest Safety Compliance
           const hasHelmet = toggleHelmet.checked ? analyzeHelmetColor(canvasCtx, helmetX, helmetY, helmetW, helmetH) : true;
           const hasVest = toggleVest.checked ? analyzeVestColor(canvasCtx, vestX, vestY, vestW, vestH) : true;
 
@@ -412,7 +527,7 @@
 
           canvasCtx.lineWidth = 3;
 
-          // Draw Helmet Bounding Box
+          // Draw Helmet Frame
           if (toggleHelmet.checked) {
             canvasCtx.strokeStyle = hasHelmet ? '#10B981' : '#EF4444';
             canvasCtx.strokeRect(helmetX, helmetY, helmetW, helmetH);
@@ -420,34 +535,34 @@
             canvasCtx.fillRect(helmetX, helmetY - 20, 110, 20);
             canvasCtx.fillStyle = '#000000';
             canvasCtx.font = 'bold 11px sans-serif';
-            canvasCtx.fillText(hasHelmet ? 'HELMET: OK' : 'NO HELMET!', helmetX + 5, helmetY - 5);
+            canvasCtx.fillText(hasHelmet ? 'HELMET: OK' : 'NO HELMET!', helmetX + 6, helmetY - 6);
           }
 
-          // Draw Vest Bounding Box
+          // Draw Vest Frame
           if (toggleVest.checked && vestH > 10) {
             canvasCtx.strokeStyle = hasVest ? '#10B981' : '#EF4444';
             canvasCtx.strokeRect(vestX, vestY, vestW, vestH);
             canvasCtx.fillStyle = hasVest ? '#10B981' : '#EF4444';
-            canvasCtx.fillRect(vestX, vestY, 100, 20);
+            canvasCtx.fillRect(vestX, vestY, 90, 18);
             canvasCtx.fillStyle = '#000000';
-            canvasCtx.font = 'bold 11px sans-serif';
-            canvasCtx.fillText(hasVest ? 'VEST: OK' : 'NO VEST!', vestX + 5, vestY + 14);
+            canvasCtx.font = 'bold 10px sans-serif';
+            canvasCtx.fillText(hasVest ? 'VEST: OK' : 'NO VEST!', vestX + 5, vestY + 13);
           }
 
-          // Draw Worker Tag
+          // Draw Worker Identifier
           if (toggleWorkerID.checked) {
             canvasCtx.strokeStyle = '#F59E0B';
-            canvasCtx.strokeRect(minX, minY, faceWidth, faceHeight);
+            canvasCtx.strokeRect(minX, minY, faceW, faceH);
             canvasCtx.fillStyle = '#F59E0B';
-            canvasCtx.fillRect(minX, minY - 22, faceWidth, 22);
+            canvasCtx.fillRect(minX, minY - 22, faceW, 22);
             canvasCtx.fillStyle = '#0f172a';
             canvasCtx.font = 'bold 12px sans-serif';
             canvasCtx.fillText(workerLabel, minX + 5, minY - 6);
           }
 
-          // Render Worker Entry in Right Panel
+          // Render Worker Card
           const card = document.createElement('div');
-          card.className = "p-3 bg-slate-900/80 rounded-lg border border-slate-800 flex justify-between items-center";
+          card.className = "p-3 bg-slate-900/90 rounded-xl border border-slate-800 flex justify-between items-center shadow";
           card.innerHTML = `
             <div>
               <p class="text-xs font-bold text-amber-400">${workerLabel}</p>
@@ -456,34 +571,31 @@
                 <span class="${hasVest ? 'text-emerald-400' : 'text-rose-400 font-bold'}">Vest: ${hasVest ? 'OK' : 'MISSING'}</span>
               </div>
             </div>
-            <span class="text-[10px] font-bold px-2 py-1 rounded ${hasHelmet && hasVest ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
+            <span class="text-[10px] font-bold px-2 py-1 rounded-md ${hasHelmet && hasVest ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
               ${hasHelmet && hasVest ? 'COMPLIANT' : 'NON-COMPLIANT'}
             </span>
           `;
           activeWorkersList.appendChild(card);
 
-          // Log & Audio Trigger
           if (!hasHelmet || !hasVest) {
-            const violationMsg = `SAFETY ALERT: ${workerLabel} missing ${!hasHelmet ? 'Safety Helmet ' : ''}${!hasVest ? 'High-Vis Vest' : ''}`;
-            addLog(violationMsg, true);
-            speakAlert(`Attention! Safety violation detected for ${workerLabel}`);
+            addLog(`VIOLATION: ${workerLabel} missing ${!hasHelmet ? 'Safety Helmet ' : ''}${!hasVest ? 'High-Vis Vest' : ''}`, true);
+            speakAlert(`Safety violation detected for ${workerLabel}`);
           }
         });
 
-        // Update Compliance Progress Bars
-        const helmetPct = Math.round((compliantCount / totalWorkersCount) * 100);
-        document.getElementById('helmetRate').innerText = `${helmetPct}%`;
-        document.getElementById('helmetBar').style.width = `${helmetPct}%`;
+        const pct = Math.round((compliantCount / totalWorkers) * 100);
+        document.getElementById('helmetRate').innerText = `${pct}%`;
+        document.getElementById('helmetBar').style.width = `${pct}%`;
 
       } else {
         document.getElementById('workerCount').innerText = '0';
-        activeWorkersList.innerHTML = `<p class="text-xs text-slate-500 italic">No workers currently detected in camera frame...</p>`;
+        activeWorkersList.innerHTML = `<p class="text-xs text-slate-400 italic">No workers detected in camera field...</p>`;
       }
 
       canvasCtx.restore();
     }
 
-    // Camera Stream Initialization
+    // --- 5. Start Camera Stream ---
     const camera = new Camera(videoElement, {
       onFrame: async () => {
         await faceMesh.send({ image: videoElement });
@@ -493,23 +605,23 @@
     });
 
     camera.start().catch(err => {
-      console.error("Webcam Error:", err);
+      console.error("Camera access blocked:", err);
       loader.innerHTML = `
-        <div class="text-rose-500 space-y-2">
+        <div class="text-rose-400 space-y-2">
           <i data-lucide="camera-off" class="w-10 h-10 mx-auto"></i>
-          <p class="text-sm font-semibold">Webcam Stream Blocked or Missing</p>
-          <p class="text-xs text-slate-400">Please grant camera permissions in browser settings to activate live AI monitoring.</p>
+          <p class="text-sm font-semibold">Webcam Feed Unreachable</p>
+          <p class="text-xs text-slate-400">Please grant camera permissions in your browser bar to initiate live tracking.</p>
         </div>
       `;
       lucide.createIcons();
     });
 
-    // Environmental Gas & AQI Sensor Stream Simulation
+    // --- 6. Live Gas Sensor Stream Simulation ---
     setInterval(() => {
-      const aqi = Math.floor(45 + Math.random() * 10);
-      const ch4 = (0.10 + Math.random() * 0.04).toFixed(2);
+      const aqi = Math.floor(42 + Math.random() * 10);
+      const ch4 = (0.11 + Math.random() * 0.03).toFixed(2);
       const co = Math.floor(10 + Math.random() * 4);
-      const temp = (28.2 + Math.random() * 0.6).toFixed(1);
+      const temp = (28.2 + Math.random() * 0.5).toFixed(1);
 
       document.getElementById('aqiVal').innerText = aqi;
       document.getElementById('ch4Val').innerText = `${ch4}%`;
